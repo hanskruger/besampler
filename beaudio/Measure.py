@@ -2,22 +2,40 @@ from collections import namedtuple
 from functools import reduce
 import numpy as np
 import datetime
-import re
+import re, os
 import wave
+from pydub import AudioSegment
+from pathlib import Path
 
 def ms(value):
     return datetime.timedelta(milliseconds=int(value))
 
 
-class Wavefile(object):
-    def __init__(self, hz, data):
+class WaveFile(object):
+    def __init__(self, hz, length_ms, channels = 1):
         pass
-
 
     @staticmethod
     def from_file(filename):
-        pass
-    
+        audio_data = AudioSegment.from_file(filename)
+        ret = WaveFile(len(audio_data), audio_data.frame_rate)
+        ret._audio_data = audio_data
+        return ret
+
+    @staticmethod
+    def silence(length_ms, hz):
+        ret = WaveFile(length_ms, hz)
+        ret._audio_data = AudioSegment.silent(duration = length_ms, frame_rate = hz)
+        return ret
+
+    def export(self, name):
+        self._audio_data.export(name, format="wav")
+
+    def overlay(self, other, offset):
+        new_data = self._audio_data.overlay(other._audio_data, position=offset)
+        self._audio_data = new_data
+        return self
+
     @staticmethod
     def empty(hz, duration_ms):
         cnt = int(hz * duration_ms / 1000)
@@ -67,10 +85,14 @@ class Sample():
         self._sample_rate           = 0
         self._number_samples        = 0
         self._offset_ms = offset_ms = 0
+        self._wave = WaveFile.from_file(file_name)
+
+        # check correct frame rate etc.
+
 
         with wave.open(file_name,"rb") as f:
             self._sample_rate    = f.getframerate()
-            self._number_samples = f.getnframes() 
+            self._number_samples = f.getnframes()
         pass
 
     @property
@@ -85,15 +107,19 @@ class Sample():
     def offset_ms(self):
         return self._offset_ms
 
-
+    @property
+    def wave(self):
+        return self._wave
 
 
 class Pattern():
     def __init__(self, pattern):
         self._pattern = pattern
         self._beats   = re.split("\s+", self._pattern)
+        self._samples = []
 
     def add_samples(self, *samples):
+        self._samples.extend(samples)
         pass
 
 
@@ -127,6 +153,10 @@ class Pattern():
 
     def __repr__(self):
         return f"<Pattern {self} at 0x{id(self):x}>"
+
+    def sample(self, repeat_index = 0):
+        return self._samples[ repeat_index % len(self._samples) ]
+
 
 class Staff():
     def __init__(self, name, lines = 5, key = "Violin"):
@@ -270,6 +300,7 @@ class Player():
         self._bpm = bpm
         self._freq = 48000;
         self._artist = {}
+        self._out_dir = Path(".") 
 
     def __synth_measure(self, m):
         pass
@@ -321,14 +352,24 @@ class Player():
 
         return Prog(prog)
 
-    def _synth_instrument(self, prog, instrument, score):
+    def _synth_instrument(self, prog, artis, score):
         lenght_ms      = 60000.0 * score.length * score.time_signature.pulses / self._bpm
-        lenght_samples = lenght_ms *  self._freq / 1000
+        lenght_samples = lenght_ms * self._freq / 1000.0
+        instrument = artis.instrument
+        filename = self._out_dir / Path( f"{instrument.name}_{artis.name}.wav")
+        print(filename)
 
 
+        wav = WaveFile.silence(lenght_ms, self._freq)
+
+        for p in prog.programm:
+            offset =  1000.0 * p.staff_index * 60.0 / self._bpm
+            print(offset, p.pattern.sample(p.repeat_index).wave)
+            wav.overlay(p.pattern.sample(p.repeat_index).wave , offset=offset)
 
 
-        pass
+        wav.export(filename)
+        return filename
 
     def synthesize(self, score, staff = None):
 
@@ -353,7 +394,7 @@ class Player():
             for i in self._artist[s.name]:
                 # pass 3: For each staff line and isntrument, generate the wave file
                 prog = self._compile_instrument(i, s, score)
-                self._synth_instrument(prog, i.instrument, score)
+                self._synth_instrument(prog, i, score)
                 print(prog.programm)
 
                 # pass 4: Apply PAN, gain, deplay etc. for each instrument
@@ -368,12 +409,13 @@ class Player():
         pass
 
 def estacio_caixa():
-    cax = Instrument("Caixa", bpm = 100)
-    cax.add_pattern("XxLr X.X. r...").add_samples(
-            Sample("../samples/estácio/caixa_1/100bpm/virada1-1.wav"), 
-            Sample("../samples/estácio/caixa_1/100bpm/virada1-2.wav"), 
-            )
-    cax.add_pattern("/ / / /").add_samples("caixa_groove_1_100bpm.wav", "caixa_groove_2_100bpm.wav")
+    cax = Instrument("caixa", bpm = 100)
+    cax.add_pattern("XxLx X.X. x...").add_samples(
+            Sample("../samples/estácio/caixa_1/100bpm/virada1-1.wav"),
+            Sample("../samples/estácio/caixa_1/100bpm/virada1-2.wav"))
+    cax.add_pattern("/ / / /").add_samples(
+            Sample("../samples/estácio/caixa_1/100bpm/groove-1.wav"),
+            Sample("../samples/estácio/caixa_1/100bpm/groove-2.wav"))
 
 #    cax.add_pattern("/ / / R...").add_samples(bpm = 100, "caixa_groove_1_100bpm.wav", "caixa_groove_2_100bpm.wav")
 #    cax.add_pattern("/ / R...").add_samples().bpm(100).wav("caixa_groove_1_100bpm.wav", "caixa_groove_2_100bpm.wav")
@@ -394,7 +436,7 @@ def bossa():
     m = sc.add_measure(
         cho("xxxx x.x. x... ...."),
         tam("xxxx x.x. x... ...."),
-        cax("XxLr X.X. r... ...."),
+        cax("XxLx X.X. x... ...."),
         pri(".... ..R. .... ..R."),
         seg("R... .... R... ...."),
         ter(".... ..R. .... ..R.")
@@ -435,6 +477,14 @@ def bossa():
         pri("/ / / /"),
         seg("/ / / /"),
         ter("/ / / /")
+    )
+    m = sc.add_measure(
+        cho("xxxx x.x. x... ...."),
+        tam("xxxx x.x. x... ...."),
+        cax("XxLx X.X. x... ...."),
+        pri(".... ..R. .... ..R."),
+        seg("R... .... R... ...."),
+        ter(".... ..R. .... ..R.")
     )
 
     return sc
