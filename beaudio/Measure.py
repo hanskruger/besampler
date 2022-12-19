@@ -3,6 +3,7 @@ from functools import reduce
 import numpy as np
 import datetime
 import re
+import wave
 
 def ms(value):
     return datetime.timedelta(milliseconds=int(value))
@@ -57,10 +58,35 @@ class TimeSignature():
     def pulses(self):
         return self._pulses
 
+    @property
+    def note_value(self):
+        return self._note_value
 
 class Sample():
-    def __init__(self, file_name, offset = 0, bpm = 100):
+    def __init__(self, file_name, offset_ms = 0, bpm = 100):
+        self._sample_rate           = 0
+        self._number_samples        = 0
+        self._offset_ms = offset_ms = 0
+
+        with wave.open(file_name,"rb") as f:
+            self._sample_rate    = f.getframerate()
+            self._number_samples = f.getnframes() 
         pass
+
+    @property
+    def file_name(self):
+        return self._file_name
+
+    @property
+    def length_ms(self):
+        return 1000.0 * self._number_samples / self._sample_rate
+
+    @property
+    def offset_ms(self):
+        return self._offset_ms
+
+
+
 
 class Pattern():
     def __init__(self, pattern):
@@ -125,9 +151,10 @@ class Staff():
 
 class Instrument():
     pass
-    def __init__(self, name):
+    def __init__(self, name, bpm = 120):
         self._name = name
         self._patterns = {}
+        self._bpm = bpm
         pass
 
     def add_pattern(self, *patterns):
@@ -166,12 +193,6 @@ class Measure():
     def parse(inp, time_signature = TimeSignature(), strict = True):
         '''
         If strict is true, parsing will fail, if wrong number of beats are given.
-        >>> parse_staff_line(".... .... .... ....")
-        >>> parse_staff_line("   .... .... .... ....   ")
-        >>> parse_staff_line(".... ... .. .")
-        >>> parse_staff_line("- - - -")
-        >>> parse_staff_line("... ...... .... .")
-        >>> parse_staff_line(".... .... .... ....")
         '''
         inp_orig = inp
         inp = inp.strip("\t ")
@@ -215,6 +236,11 @@ class Score():
         self._score.append(instruments)
         pass
 
+    @property
+    def length(self):
+        '''Return the length in bars'''
+        return len(self._score)
+
     def measures(self, staff = None):
         if None is staff:
             for m in self._score:
@@ -242,7 +268,7 @@ class InstrumentSettings():
 class Player():
     def __init__(self, bpm = 135):
         self._bpm = bpm
-        self._freq = 44100;
+        self._freq = 48000;
         self._artist = {}
 
     def __synth_measure(self, m):
@@ -279,7 +305,7 @@ class Player():
                     continue
                 if ("%" == staff_line[idx]): # handle measure repeat
                     if head_index != (idx % 4):
-                        raise RuntimeError(f"Repeat must be at begoinning of the bar.")
+                        raise RuntimeError(f"Repeat must be at beginning of the bar.")
                     # todo: handle repeat of last n beats
                     raise RuntimeError(f"Repeat not supported yet.")
                     pass
@@ -287,15 +313,21 @@ class Player():
 
             # choose most appropriate patter
             pat = patterns[0]
-            prog.append( ProgEntry(pat, 0, idx) )
-            print(f"pat lenght {len(pat)}")
+            repeat_index = 0 if (not prog or  prog[-1].pattern != pat) else prog[-1].repeat_index + 1
+            prog.append( ProgEntry(pat, repeat_index, idx) )
             idx = idx + len(pat)
 
         # start synthesizing the sound file.
 
         return Prog(prog)
 
-    def _synth_instrument(self, prog, instrument):
+    def _synth_instrument(self, prog, instrument, score):
+        lenght_ms      = 60000.0 * score.length * score.time_signature.pulses / self._bpm
+        lenght_samples = lenght_ms *  self._freq / 1000
+
+
+
+
         pass
 
     def synthesize(self, score, staff = None):
@@ -307,7 +339,9 @@ class Player():
                 staffs.append(s.staff)
         staffs = set(staffs)
 
-        #print(staffs)
+        lenght_ms      = 60000.0 * score.length * score.time_signature.pulses / self._bpm
+        lenght_samples = lenght_ms *  self._freq / 1000
+        print(f"Total length of this score is {score.length * score.time_signature.pulses} beats, {lenght_ms/1000}s")
 
         instruments = []
 
@@ -319,7 +353,7 @@ class Player():
             for i in self._artist[s.name]:
                 # pass 3: For each staff line and isntrument, generate the wave file
                 prog = self._compile_instrument(i, s, score)
-                self._synth_instrument(prog, i.instrument)
+                self._synth_instrument(prog, i.instrument, score)
                 print(prog.programm)
 
                 # pass 4: Apply PAN, gain, deplay etc. for each instrument
@@ -334,8 +368,11 @@ class Player():
         pass
 
 def estacio_caixa():
-    cax = Instrument("Caixa")
-    cax.add_pattern("XxLr X.X. r...").add_samples(Sample("caixa_turn_1_100bpm.wav" , offset=121, bpm = 100), "caixa_abriss_2_100bpm.wav")
+    cax = Instrument("Caixa", bpm = 100)
+    cax.add_pattern("XxLr X.X. r...").add_samples(
+            Sample("../samples/estácio/caixa_1/100bpm/virada1-1.wav"), 
+            Sample("../samples/estácio/caixa_1/100bpm/virada1-2.wav"), 
+            )
     cax.add_pattern("/ / / /").add_samples("caixa_groove_1_100bpm.wav", "caixa_groove_2_100bpm.wav")
 
 #    cax.add_pattern("/ / / R...").add_samples(bpm = 100, "caixa_groove_1_100bpm.wav", "caixa_groove_2_100bpm.wav")
