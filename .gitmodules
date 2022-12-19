@@ -1,0 +1,3 @@
+[submodule "contrib/pydub"]
+	path = contrib/pydub
+	url = https://github.com/jiaaro/pydub.git
