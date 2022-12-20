@@ -4,6 +4,7 @@ import numpy as np
 import datetime
 import re, os
 import wave
+import logging
 from pydub import AudioSegment
 from pathlib import Path
 
@@ -47,7 +48,6 @@ class Score():
         be at the same position. is prepended by the name of the instruament.
         '''
         # Do some checks: All lines must have the same length and the bars must be a t the same location.
-        print(len(set(map(len, lines))))
         if (1 != len(list(set(map(len, lines))))):
             raise RuntimeError("Error while parsing line {line}: All staff lines MUST have the same length (except for trailing whitespaces)")
             pass
@@ -82,7 +82,7 @@ class Score():
                         score.add_staff_line(staffline)
                         staffline = []
                     continue
-                print(line)
+                #print(line)
                 measures = line.split("|")
                 if (len(measures)  > 1):
                     staffline.append(line)

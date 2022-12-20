@@ -2,8 +2,11 @@ from collections import namedtuple
 from functools import reduce
 import numpy as np
 import datetime
-import re, os
+import re, os, sys
 import wave
+import argparse
+import traceback
+import logging
 from pydub import AudioSegment
 from pathlib import Path
 from functools import total_ordering
@@ -11,7 +14,12 @@ from functools import total_ordering
 from besampler import *
 from besampler.sample import Sample
 
-
+parser = argparse.ArgumentParser(
+                    prog = 'Bloco Esperança Sampler',
+                    description = 'Sample Samba Breaks using short samples.')
+parser.add_argument('score', type=Path, help="The score to be sampled")           # positional argument
+parser.add_argument('-v', '--verbose', action='store_true')  # on/off flag
+parser.add_argument('-D', '--debug', action='store_true')  # on/off flag
 
 def estacio_caixa():
     cax = Instrument("caixa", bpm = 100)
@@ -94,12 +102,33 @@ def bossa():
 
     return sc
 
-if __name__ == "__main__":
+
+def main(args):
+   
+    if (not args.score or not args.score.exists()):
+        raise RuntimeError(f"File {args.score} does not exist")
+
     player = Player(bpm = 100)
 
     player.add_artist("cax1", staff="Caixa", instrument=estacio_caixa())
 
-    score = Score.from_file("examples/bossa.txt")
+    score = Score.from_file(args.score)
     score = bossa()
     player.synthesize(score)
 
+if __name__ == "__main__":
+    args = parser.parse_args()
+    try:
+        if (args.debug):
+            logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
+        elif(args.verbose):
+            logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
+        else:
+            logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.WARN)
+
+        main(args)
+    except Exception as e:
+        if (args.debug):
+            traceback.print_exc()
+        sys.exit(f"Error: {e}") 
+    sys.exit() 

@@ -4,6 +4,7 @@ import numpy as np
 import datetime
 import re, os
 import wave
+import logging
 from pydub import AudioSegment
 from pathlib import Path
 from functools import total_ordering
@@ -42,13 +43,13 @@ class Player():
     def _compile_instrument(self, artist, staff, score):
         Prog      = namedtuple("Prog",["programm", ])
         ProgEntry = namedtuple("ProgEntry",["pattern", "repeat_index", "staff_index"])
-        print(f"Generating audio track for artist {artist.name}({artist.instrument.name}), staff {staff}.")
+        logging.info(f"Generating audio track for artist {artist.name}({artist.instrument.name}), staff {staff}.")
         head_index = 0;
         instrument = artist.instrument
         measures = list(score.measures(staff))
         staff_line = list(reduce(lambda a,b: a+b,  map(lambda x: x.measure.notes, measures)))
         prog = []
-        print( staff_line)
+        #print( staff_line)
 
         idx, mcount = 0, len(staff_line)
         while idx < mcount:
@@ -85,16 +86,15 @@ class Player():
         lenght_samples = lenght_ms * self._freq / 1000.0
         instrument = artis.instrument
         filename = self._out_dir / Path( f"{instrument.name}_{artis.name}.wav")
-        print(filename)
+        logging.info(f"Writing track for artist {instrument.name}/{artis.name} to {filename}.")
 
 
         wav = WaveFile.silence(lenght_ms, self._freq)
 
         for p in prog.programm:
             offset =  1000.0 * p.staff_index * 60.0 / self._bpm
-            print(offset, p.pattern.sample(p.repeat_index).wave)
+            #print(offset, p.pattern.sample(p.repeat_index).wave)
             wav.overlay(p.pattern.sample(p.repeat_index).wave , offset=offset)
-
 
         wav.export(filename)
         return filename
@@ -110,20 +110,20 @@ class Player():
 
         lenght_ms      = 60000.0 * score.length * score.time_signature.pulses / self._bpm
         lenght_samples = lenght_ms *  self._freq / 1000
-        print(f"Total length of this score is {score.length * score.time_signature.pulses} beats, {lenght_ms/1000}s")
+        logging.info(f"Total length of this score is {score.length * score.time_signature.pulses} beats, {lenght_ms/1000}s")
 
         instruments = []
 
         # pass 2: Check for instrumetns for all staff lines
         for s in staffs:
             if s.name not in self._artist.keys():
-                print(f"No artist given for staff {s}.")
+                logging.warning(f"No artist given for staff {s}.")
                 continue
             for i in self._artist[s.name]:
                 # pass 3: For each staff line and isntrument, generate the wave file
                 prog = self._compile_instrument(i, s, score)
                 self._synth_instrument(prog, i, score)
-                print(prog.programm)
+                #print(prog.programm)
 
                 # pass 4: Apply PAN, gain, deplay etc. for each instrument
 
