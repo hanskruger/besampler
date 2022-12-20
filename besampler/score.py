@@ -23,12 +23,27 @@ class Score():
     def add_staff(self, staff):
         return staff
 
+    def add_count_in(self, pattern = "x x x x", staff = Staff("Count In")):
+        '''
+        Prepends a bar with a count in.
+        '''
+        self._score.insert(0, [ staff(pattern), ])
+        return self 
+    
+    def add_click(self,  pattern = "X x x x", staff = Staff("Click")):
+        '''
+        Add a extra staff line with a click.
+        '''
+        entry = staff(pattern)
+        for m in self._score:
+            m.append(entry)
+        return self
+
     def add_measure(self, *instruments):
         instruments[0].measure
         instruments[0].staff
-
-        self._score.append(instruments)
-        pass
+        self._score.append(list(instruments))
+        return self 
 
     @property
     def length(self):
@@ -58,7 +73,7 @@ class Score():
         '''
         # Do some checks: All lines must have the same length and the bars must be a t the same location.
         if (1 != len(list(set(map(len, lines))))):
-            raise RuntimeError("Error while parsing line {line}: All staff lines MUST have the same length (except for trailing whitespaces)")
+            raise RuntimeError(f"Error while parsing line {line}: All staff lines MUST have the same length (except for trailing whitespaces)")
             pass
 
         instruments = list(map(lambda x: Staff(x.split("|", 1)[0].strip()), lines))

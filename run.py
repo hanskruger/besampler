@@ -21,12 +21,14 @@ parser = argparse.ArgumentParser(
 parser.add_argument('score', type=Path, help="The score to be sampled")           # positional argument
 parser.add_argument('-v', '--verbose', action='store_true')  # on/off flag
 parser.add_argument('-D', '--debug', action='store_true')  # on/off flag
+parser.add_argument('--count_in', action='store_true')  # on/off flag
+parser.add_argument('--click', action='store_true')  # on/off flag
 
 def click():
     ins = Instrument("Click", bpm = 100)
-    ins.add_pattern("X...").add_samples(
+    ins.add_pattern("X").add_samples(
             Sample("samples/click-hard.wav"))
-    ins.add_pattern("x...").add_samples(
+    ins.add_pattern("x").add_samples(
             Sample("samples/click-soft.wav"))
     return ins
 
@@ -44,6 +46,11 @@ def estacio_caixa():
     cax.add_pattern("|/ / / /").add_samples(
             Sample("samples/estácio/caixa_1/100bpm/groove-1.wav"),
             Sample("samples/estácio/caixa_1/100bpm/groove-2.wav"))
+    
+    cax.add_pattern("/").add_samples(
+            Sample("samples/estácio/caixa_1/100bpm/single_groove-1.wav"),
+            Sample("samples/estácio/caixa_1/100bpm/single_groove-2.wav"),
+            Sample("samples/estácio/caixa_1/100bpm/single_groove-3.wav"))
     
     cax.add_pattern("x...").add_samples(
             Sample("samples/estácio/caixa_1/100bpm/R___-1.wav"))
@@ -148,11 +155,16 @@ def main(args):
 
     player = Player(bpm = 100)
 
-    player.add_artist("cax1", staff="Caixa", instrument=estacio_caixa())
-    player.add_artist("click", staff="Click", instrument=click())
-    player.add_artist("apito", staff="Apito", instrument=apito())
+    player.add_artist("cax1",     staff="Caixa",    instrument=estacio_caixa())
+    player.add_artist("apito",    staff="Apito",    instrument=apito())
+    player.add_artist("click",    staff="Click",    instrument=click())
+    player.add_artist("count_in", staff="Count In", instrument=apito())
 
     score = Score.from_file(args.score)
+    if(args.count_in):
+        score.add_count_in()
+    if(args.click):
+        score.add_click()
     #score = bossa()
     player.synthesize(score)
 

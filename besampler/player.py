@@ -15,16 +15,32 @@ from .measure  import match_pause, match_repeat
 from .utils    import Clock
 
 class InstrumentSettings():
-    def __init__(self):
+    def __init__(self, pan = 0, delay_ms = 0, gain_dbfs = 0.0):
+        self._pan = pan
+        self._delay_ms = delay_ms
+        self._gain = gain_dbfs
         pass
 
-    def pan(self, position):
+    @property
+    def gain(self):
+        return self._gain
+    @property
+    def pan(self):
+        return self._pan
+    @property
+    def delay_ms(self):
+        return self._delay_ms
+
+    def set_pan(self, pan):
+        self._pan = pan
         return self
 
-    def delay(self, ms):
+    def set_delay(self, delay_ms):
+        self._delay_ms = delay_ms
         return self
 
-    def gain(self, dbfs):
+    def set_gain(self, gain_dbfs):
+        self._gain = gain_dbfs
         return self
 
 class Player():
@@ -38,21 +54,13 @@ class Player():
     def __synth_measure(self, m):
         pass
 
-    def add_click(self, instrument = "click", pattern = "X... x... x... x..."):
-        Click      = namedtuple("Click",["instrument", "pattern" ])
-        self._click = Click(instrument, pattern)
-        return self
 
-    def add_count_in(self, pulses = None, instruemnt = "click"):
-        pass
-
-    def add_artist(self, name, staff, instrument):
+    def add_artist(self, name, staff, instrument, setting = InstrumentSettings()):
         Artist = namedtuple("Artist",["name", "staff","settings", "instrument"])
-        settings = InstrumentSettings()
-        self._artist.setdefault(staff, []).append(Artist(name, staff, settings, instrument))
-        return settings
+        self._artist.setdefault(staff, []).append(Artist(name, staff, setting, instrument))
+        return setting
 
-    def _compile_instrument(self, artist, staff, score):
+    def _compile_artist(self, artist, staff, score):
         Prog      = namedtuple("Prog",["programm", ])
         ProgEntry = namedtuple("ProgEntry",["pattern", "repeat_index", "staff_index"])
         logging.info(f"Generating audio track for artist {artist.name}({artist.instrument.name}), staff {staff}.")
@@ -71,7 +79,7 @@ class Player():
             # this sdarch algorithm sohould be improved later onl. We need a traveling salesman search over
             # the combination of "paths". And then we evaluate the "length" of the path and choose the best one.
             # The best path in this ase is the one,  that need less patterns to complete.
-            patterns = sorted(filter(lambda x: x.match(staff_line, idx, head_index = head_index, time_signature = score.time_signature), iter(instrument)), key = len)
+            patterns = sorted(filter(lambda x: x.match(staff_line, idx, head_index = head_index, time_signature = score.time_signature), iter(instrument)), key = len, reverse = True)
 
             if (not patterns):
                 if (match_pause(staff_line[idx])): # skip pause
@@ -100,9 +108,9 @@ class Player():
 
         return Prog(prog)
 
-    def _synth_instrument(self, prog, artis, score):
+    def _synth_artist(self, prog, artis, score):
         clk = Clock(self._bpm, frame_rate=self._freq, offset_ms=0)
-        
+
         lenght_ms      = 60000.0 * score.length * score.time_signature.pulses / self._bpm
         lenght_samples = lenght_ms * self._freq / 1000.0
         instrument = artis.instrument
@@ -133,7 +141,7 @@ class Player():
         logging.info(f"Total length of this score is {score.length * score.time_signature.pulses} beats, {lenght_ms/1000}s")
 
         instruments = []
-        
+
 
         # pass 2: Check for instrumetns for all staff lines
         for s in staffs:
@@ -142,12 +150,12 @@ class Player():
                 continue
             for i in self._artist[s.name]:
                 # pass 3: For each staff line and isntrument, generate the wave file
-                prog = self._compile_instrument(i, s, score)
-                self._synth_instrument(prog, i, score)
+                prog = self._compile_artist(i, s, score)
+                self._synth_artist(prog, i, score)
                 #print(prog.programm)
 
                 # pass 4: Apply PAN, gain, deplay etc. for each instrument
-                
+
 
 
         # generte count-in and click track
@@ -159,7 +167,7 @@ class Player():
         # pass 5: Apply dynamics for each instrument or instrument groups
 
         # pass 6: Merge all wave files into one
-        
+
 
 
     def play(self, score):
