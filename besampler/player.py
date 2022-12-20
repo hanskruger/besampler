@@ -12,6 +12,7 @@ from math import ceil
 
 from .wavefile import WaveFile
 from .measure  import match_pause, match_repeat
+from .utils    import Clock
 
 class InstrumentSettings():
     def __init__(self):
@@ -31,9 +32,18 @@ class Player():
         self._bpm = bpm
         self._freq = 48000;
         self._artist = {}
+        self._click  = None  
         self._out_dir = Path(".") 
 
     def __synth_measure(self, m):
+        pass
+
+    def add_click(self, instrument = "click", pattern = "X... x... x... x..."):
+        Click      = namedtuple("Click",["instrument", "pattern" ])
+        self._click = Click(instrument, pattern)
+        return self
+
+    def add_count_in(self, pulses = None, instruemnt = "click"):
         pass
 
     def add_artist(self, name, staff, instrument):
@@ -47,11 +57,13 @@ class Player():
         ProgEntry = namedtuple("ProgEntry",["pattern", "repeat_index", "staff_index"])
         logging.info(f"Generating audio track for artist {artist.name}({artist.instrument.name}), staff {staff}.")
         head_index = 0;
+        ONE_BAR_PAUSE = score.time_signature.fill_bar("-") 
         instrument = artist.instrument
         measures = list(score.measures(staff))
-        staff_line = list(reduce(lambda a,b: a+b,  map(lambda x: x.measure.notes, measures)))
+        #print(staff, measures)
+        staff_line = list(reduce(lambda a,b: a+b,  map(lambda x: x.measure.notes if x else ONE_BAR_PAUSE, measures)))
         prog = []
-        #print( staff_line)
+        #print(staff, staff_line)
 
         idx, mcount = 0, len(staff_line)
         while idx < mcount:
@@ -89,17 +101,18 @@ class Player():
         return Prog(prog)
 
     def _synth_instrument(self, prog, artis, score):
+        clk = Clock(self._bpm, frame_rate=self._freq, offset_ms=0)
+        
         lenght_ms      = 60000.0 * score.length * score.time_signature.pulses / self._bpm
         lenght_samples = lenght_ms * self._freq / 1000.0
         instrument = artis.instrument
         filename = self._out_dir / Path( f"{instrument.name}_{artis.name}.wav")
         logging.info(f"Writing track for artist {instrument.name}/{artis.name} to {filename}.")
 
-
         wav = WaveFile.silence(lenght_ms, self._freq)
 
         for p in prog.programm:
-            offset =  1000.0 * p.staff_index * 60.0 / self._bpm
+            offset =  clk.pulse( p.staff_index )
             #print(offset, p.pattern.sample(p.repeat_index).wave)
             wav.overlay(p.pattern.sample(p.repeat_index).wave , offset=offset)
 
@@ -120,6 +133,7 @@ class Player():
         logging.info(f"Total length of this score is {score.length * score.time_signature.pulses} beats, {lenght_ms/1000}s")
 
         instruments = []
+        
 
         # pass 2: Check for instrumetns for all staff lines
         for s in staffs:
@@ -133,11 +147,19 @@ class Player():
                 #print(prog.programm)
 
                 # pass 4: Apply PAN, gain, deplay etc. for each instrument
+                
+
+
+        # generte count-in and click track
+        if (self._click):
+            pass
+
+
 
         # pass 5: Apply dynamics for each instrument or instrument groups
 
         # pass 6: Merge all wave files into one
-
+        
 
 
     def play(self, score):

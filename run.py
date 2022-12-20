@@ -13,6 +13,7 @@ from functools import total_ordering
 
 from besampler import *
 from besampler.sample import Sample
+from besampler.sample_builder import SampleBuilder
 
 parser = argparse.ArgumentParser(
                     prog = 'Bloco Esperança Sampler',
@@ -20,6 +21,20 @@ parser = argparse.ArgumentParser(
 parser.add_argument('score', type=Path, help="The score to be sampled")           # positional argument
 parser.add_argument('-v', '--verbose', action='store_true')  # on/off flag
 parser.add_argument('-D', '--debug', action='store_true')  # on/off flag
+
+def click():
+    ins = Instrument("Click", bpm = 100)
+    ins.add_pattern("X...").add_samples(
+            Sample("samples/click-hard.wav"))
+    ins.add_pattern("x...").add_samples(
+            Sample("samples/click-soft.wav"))
+    return ins
+
+def apito():
+    ins = Instrument("Apito", bpm = 100)
+    ins.add_pattern("x").add_samples(
+            Sample("samples/whistle.wav"))
+    return ins
 
 def estacio_caixa():
     cax = Instrument("caixa", bpm = 100)
@@ -32,6 +47,26 @@ def estacio_caixa():
     
     cax.add_pattern("x...").add_samples(
             Sample("samples/estácio/caixa_1/100bpm/R___-1.wav"))
+    
+    cax.add_pattern("x.x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/caixa_1/100bpm/R___-1.wav"))
+                .add_subsample(Sample("samples/estácio/caixa_1/100bpm/R___-1.wav"), ".x")
+                .build()
+                )
+    cax.add_pattern("x.x").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/caixa_1/100bpm/R___-1.wav"))
+                .add_subsample(Sample("samples/estácio/caixa_1/100bpm/R___-1.wav"), "..x")
+                .build()
+                )
+    cax.add_pattern("xxx").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/caixa_1/100bpm/R___-1.wav"))
+                .add_subsample(Sample("samples/estácio/caixa_1/100bpm/R___-1.wav"), ".x.")
+                .add_subsample(Sample("samples/estácio/caixa_1/100bpm/R___-1.wav"), "..x")
+                .build()
+                )
 
 #    cax.add_pattern("/ / / R...").add_samples(bpm = 100, "caixa_groove_1_100bpm.wav", "caixa_groove_2_100bpm.wav")
 #    cax.add_pattern("/ / R...").add_samples().bpm(100).wav("caixa_groove_1_100bpm.wav", "caixa_groove_2_100bpm.wav")
@@ -52,7 +87,7 @@ def bossa():
     m = sc.add_measure(
         cho("xxxx x.x. x... ...."),
         tam("xxxx x.x. x... ...."),
-        cax("XxLx X.X. x... ...."),
+        cax("XxLx X.X. X... ...."),
         pri(".... ..R. .... ..R."),
         seg("R... .... R... ...."),
         ter(".... ..R. .... ..R.")
@@ -97,7 +132,7 @@ def bossa():
     m = sc.add_measure(
         cho("xxxx x.x. x... ...."),
         tam("xxxx x.x. x... ...."),
-        cax("XxLx X.X. x... ...."),
+        cax("XxLx X.X. X... ...."),
         pri(".... ..R. .... ..R."),
         seg("R... .... R... ...."),
         ter(".... ..R. .... ..R.")
@@ -114,9 +149,11 @@ def main(args):
     player = Player(bpm = 100)
 
     player.add_artist("cax1", staff="Caixa", instrument=estacio_caixa())
+    player.add_artist("click", staff="Click", instrument=click())
+    player.add_artist("apito", staff="Apito", instrument=apito())
 
     score = Score.from_file(args.score)
-#    score = bossa()
+    #score = bossa()
     player.synthesize(score)
 
 

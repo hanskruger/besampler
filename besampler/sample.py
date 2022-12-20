@@ -12,17 +12,29 @@ from .wavefile import WaveFile
 
 class Sample():
     def __init__(self, file_name, offset_ms = 0, bpm = 100):
+        '''
+        Represents a piec of music, taht will be used to create the fdinal file
+
+        offset_ms Offset in ms. A posstive offset, will cause the sample to be played earlier!
+        '''
         self._sample_rate           = 0
         self._number_samples        = 0
         self._offset_ms = offset_ms = 0
-        self._wave = WaveFile.from_file(file_name)
+        self._wave = None
+        if (isinstance(file_name, WaveFile)):
+            self._wave           = file_name
+            self._sample_rate    = file_name.frame_rate
+            self._number_samples = file_name.number_of_samples 
+        else:
+            self._wave = WaveFile.from_file(file_name)
+            with wave.open(file_name,"rb") as f:
+                self._sample_rate    = f.getframerate()
+                self._number_samples = f.getnframes()
 
         # check correct frame rate etc.
 
 
-        with wave.open(file_name,"rb") as f:
-            self._sample_rate    = f.getframerate()
-            self._number_samples = f.getnframes()
+
         pass
 
     @property

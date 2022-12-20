@@ -42,9 +42,14 @@ class Score():
             return
 
         for m in self._score:
+            found = False
             for e in m:
                 if e.staff == staff:
+                    found = True
                     yield e
+            if not found:
+                yield None
+
 
     def add_staff_line(self, lines, line = 0):
         '''

@@ -9,13 +9,15 @@ from pathlib import Path
 from functools import total_ordering
 
 class WaveFile(object):
-    def __init__(self, hz, length_ms, channels = 1):
+    def __init__(self, frame_rate, length_ms, channels = 1):
+        self._frame_rate = frame_rate
+        self._audio_data = None
         pass
 
     @staticmethod
     def from_file(filename):
         audio_data = AudioSegment.from_file(filename)
-        ret = WaveFile(len(audio_data), audio_data.frame_rate)
+        ret = WaveFile(audio_data.frame_rate, len(audio_data))
         ret._audio_data = audio_data
         return ret
 
@@ -38,4 +40,15 @@ class WaveFile(object):
         cnt = int(hz * duration_ms / 1000)
         return Wavefile(hz, np.zeros(cnt))
         pass
+
+    @property
+    def frame_rate(self):
+        return self._frame_rate
+    
+    @property
+    def number_of_samples(self):
+        return self._frame_rate * len(self._audio_data)
+
+
+
 
