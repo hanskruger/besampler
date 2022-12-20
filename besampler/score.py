@@ -9,6 +9,7 @@ from pydub import AudioSegment
 from pathlib import Path
 
 from .utils import TimeSignature, Clock
+from .staff import Staff
 
 class Score():
     def __init__(self, time_signature = TimeSignature()):
@@ -23,6 +24,9 @@ class Score():
         return staff
 
     def add_measure(self, *instruments):
+        instruments[0].measure
+        instruments[0].staff
+
         self._score.append(instruments)
         pass
 
@@ -41,7 +45,7 @@ class Score():
             for e in m:
                 if e.staff == staff:
                     yield e
-    
+
     def add_staff_line(self, lines, line = 0):
         '''
         Each staff line is composed of multiple lines all of the same length. Teh bar lines must
@@ -52,7 +56,7 @@ class Score():
             raise RuntimeError("Error while parsing line {line}: All staff lines MUST have the same length (except for trailing whitespaces)")
             pass
 
-        instruments = list(map(lambda x: x.split("|", 1)[0].strip(), lines))
+        instruments = list(map(lambda x: Staff(x.split("|", 1)[0].strip()), lines))
         staffs = {}
         for instrument, measures in zip(instruments, list(map(lambda x: x.split("|")[1:-1], lines))):
             staffs[ instrument ] = measures
@@ -60,26 +64,23 @@ class Score():
         if (1 != len(set(map(len, staffs.values())))):
             raise RuntimeError(f"Error while parsing line {line}: Within a staff line, each line must have the same amount of bars.")
         bar_count = len(list(staffs.values())[0])
-       
-        for bar in range(0, bar_count):
-            tmp = []
 
+        # transpose our input line.
+        for bar in  range(0, bar_count):
+            self.add_measure(*list(map(lambda x: x(staffs[x][bar], line=line), instruments)))
 
-
-        for instrument in instruments:
-            pass
-        
-    
     @staticmethod
     def from_file(filename):
         score = Score()
 
         with open(filename, "r") as f:
             staffline = []
+            lineno = 0
             for line in map(lambda x: x.strip(), f.readlines()):
+                lineno = lineno + 1
                 if(not line):
                     if(staffline):
-                        score.add_staff_line(staffline)
+                        score.add_staff_line(staffline, lineno)
                         staffline = []
                     continue
                 #print(line)
@@ -88,7 +89,7 @@ class Score():
                     staffline.append(line)
                     # parse staffline
                     pass
-
+        return score
 
 
 

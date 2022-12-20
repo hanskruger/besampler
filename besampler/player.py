@@ -8,8 +8,10 @@ import logging
 from pydub import AudioSegment
 from pathlib import Path
 from functools import total_ordering
+from math import ceil
 
 from .wavefile import WaveFile
+from .measure  import match_pause, match_repeat
 
 class InstrumentSettings():
     def __init__(self):
@@ -60,7 +62,7 @@ class Player():
             patterns = sorted(filter(lambda x: x.match(staff_line, idx, head_index = head_index, time_signature = score.time_signature), iter(instrument)), key = len)
 
             if (not patterns):
-                if ("...." == staff_line[idx] or "-" == staff_line[idx]): # skip pause
+                if (match_pause(staff_line[idx])): # skip pause
                     idx += 1
                     continue
                 if ("%" == staff_line[idx]): # handle measure repeat
@@ -69,7 +71,12 @@ class Player():
                     # todo: handle repeat of last n beats
                     raise RuntimeError(f"Repeat not supported yet.")
                     pass
-                raise RuntimeError(f"No pattern found for {staff_line[idx]}(idx).")
+                if(True):
+                    logging.warning(f"No pattern found for {staff_line[idx]}(bar {ceil(idx / score.time_signature.pulses)}) for instrument {artist.instrument.name}.")
+                    idx += 1
+                    continue
+                else:
+                    raise RuntimeError(f"No pattern found for {staff_line[idx]}({idx}).")
 
             # choose most appropriate patter
             pat = patterns[0]

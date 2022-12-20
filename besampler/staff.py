@@ -17,9 +17,9 @@ class Staff():
         self._name = name
         pass
 
-    def __call__(self, measure):
+    def __call__(self, measure, line = 0):
         RetVal = namedtuple("RetVal",["measure","staff"])
-        return RetVal(Measure.parse(measure, strict=True), self)
+        return RetVal(Measure.parse(measure, strict=True, line = line), self)
 
     def __hash__(self):
         return hash(self._name)

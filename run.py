@@ -23,12 +23,15 @@ parser.add_argument('-D', '--debug', action='store_true')  # on/off flag
 
 def estacio_caixa():
     cax = Instrument("caixa", bpm = 100)
-    cax.add_pattern("XxLx X.X. x...").add_samples(
+    cax.add_pattern("|XxLx X.X. X...").add_samples(
             Sample("samples/estácio/caixa_1/100bpm/virada1-1.wav"),
             Sample("samples/estácio/caixa_1/100bpm/virada1-2.wav"))
-    cax.add_pattern("/ / / /").add_samples(
+    cax.add_pattern("|/ / / /").add_samples(
             Sample("samples/estácio/caixa_1/100bpm/groove-1.wav"),
             Sample("samples/estácio/caixa_1/100bpm/groove-2.wav"))
+    
+    cax.add_pattern("x...").add_samples(
+            Sample("samples/estácio/caixa_1/100bpm/R___-1.wav"))
 
 #    cax.add_pattern("/ / / R...").add_samples(bpm = 100, "caixa_groove_1_100bpm.wav", "caixa_groove_2_100bpm.wav")
 #    cax.add_pattern("/ / R...").add_samples().bpm(100).wav("caixa_groove_1_100bpm.wav", "caixa_groove_2_100bpm.wav")
@@ -113,19 +116,20 @@ def main(args):
     player.add_artist("cax1", staff="Caixa", instrument=estacio_caixa())
 
     score = Score.from_file(args.score)
-    score = bossa()
+#    score = bossa()
     player.synthesize(score)
 
+
 if __name__ == "__main__":
+    _LOG_FMT="%(levelname)s: %(message)s"
     args = parser.parse_args()
     try:
         if (args.debug):
-            logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.DEBUG)
+            logging.basicConfig(format=_LOG_FMT, level=logging.DEBUG)
         elif(args.verbose):
-            logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
+            logging.basicConfig(format=_LOG_FMT, level=logging.INFO)
         else:
-            logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.WARN)
-
+            logging.basicConfig(format=_LOG_FMT, level=logging.WARN)
         main(args)
     except Exception as e:
         if (args.debug):

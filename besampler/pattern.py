@@ -9,17 +9,23 @@ from pathlib import Path
 from functools import total_ordering
 
 from .utils import TimeSignature, Clock
+from .measure import match_pause
+
+def match_head_on_1(inp):
+    if inp and "|" == inp[0]:
+        return True
+    return False
 
 class Pattern():
     def __init__(self, pattern):
         self._pattern = pattern
-        self._beats   = re.split("\\s+", self._pattern)
+        self._on_beat_1 = match_head_on_1(pattern)
+        self._beats   = re.split("\\s+", pattern.strip(" \t|"))
         self._samples = []
 
     def add_samples(self, *samples):
         self._samples.extend(samples)
         pass
-
 
     def match(self, staff_line, idx, head_index = 0, time_signature = TimeSignature()):
         '''
@@ -32,6 +38,11 @@ class Pattern():
             #print("XX ", idx, len(staff_line), len(self._beats), self._pattern)
             #this pattern is longer than than the number of measures left.
             return False
+
+        if (self._on_beat_1 and head_index != (idx % time_signature.pulses)):
+            # Check for paterns, that need to start on the first beat of a bar 
+            return False
+
         for i in range(len(self._beats)):
             if self._beats[i] != staff_line[i + idx]:
                 return False
