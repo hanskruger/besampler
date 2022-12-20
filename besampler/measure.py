@@ -17,9 +17,10 @@ def ms(value):
 def match_repeat(s):
     '''
     Returns true, is a beat of only pause is matched.
-    >>> _match_repeat(" % ") is not None
+    
+    >>> match_repeat(" % ") is not None
     True
-    >>> _match_repeat(" %% ") is None
+    >>> match_repeat(" %% ") is None
     True
     '''
 
@@ -32,21 +33,21 @@ def match_repeat(s):
 def match_pause(s):
     '''
     Returns true, is a beat of only pause is matched.
-    >>> _match_pause("") is not None
+    >>> match_pause("") is not None
     True
-    >>> _match_pause("     ") is not None
+    >>> match_pause("     ") is not None
     True
-    >>> _match_pause(".") is not None
+    >>> match_pause(".") is not None
     True
-    >>> _match_pause("..") is not None
+    >>> match_pause("..") is not None
     True
-    >>> _match_pause("....") is not None
+    >>> match_pause("....") is not None
     True
-    >>> _match_pause("-") is not None
+    >>> match_pause("-") is not None
     True
-    >>> _match_pause("-x-") is not None
+    >>> match_pause("-x-") is not None
     False
-    >>> _match_pause(".X..") is not None
+    >>> match_pause(".X..") is not None
     False
     '''
 
