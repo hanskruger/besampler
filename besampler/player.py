@@ -14,6 +14,9 @@ from .wavefile import WaveFile
 from .measure  import match_pause, match_repeat
 from .utils    import Clock
 
+Prog      = namedtuple("Prog",["programm", ])
+ProgEntry = namedtuple("ProgEntry",["sample", "repeat_index", "staff_index"])
+
 class InstrumentSettings():
     def __init__(self, pan = 0, delay_ms = 0, gain_dbfs = 0.0):
         self._pan = pan
@@ -82,8 +85,6 @@ class Player():
         return settings
 
     def _compile_artist(self, artist, staff, score):
-        Prog      = namedtuple("Prog",["programm", ])
-        ProgEntry = namedtuple("ProgEntry",["pattern", "repeat_index", "staff_index"])
         logging.info(f"Generating audio track for artist {artist.name}({artist.instrument.name}), staff {staff}.")
         head_index = 0;
         ONE_BAR_PAUSE = score.time_signature.fill_bar("-") 
@@ -93,6 +94,7 @@ class Player():
         staff_line = list(reduce(lambda a,b: a+b,  map(lambda x: x.measure.notes if x else ONE_BAR_PAUSE, measures)))
         prog = []
         #print(staff, staff_line)
+        last_pattern = None
 
         idx, mcount = 0, len(staff_line)
         while idx < mcount:
@@ -121,9 +123,10 @@ class Player():
 
             # choose most appropriate patter
             pat = patterns[0]
-            repeat_index = 0 if (not prog or  prog[-1].pattern != pat) else prog[-1].repeat_index + 1
-            prog.append( ProgEntry(pat, repeat_index, idx) )
-            idx = idx + len(pat)
+            repeat_index = 0 if (not prog or last_pattern != pat) else prog[-1].repeat_index + 1
+            last_pattern = pat
+            consumed = pat.apply(idx, prog, score, staff, staff_line, artist, repeat_index  )
+            idx = idx + consumed
 
         # start synthesizing the sound file.
 
@@ -141,7 +144,7 @@ class Player():
         for p in prog.programm:
             offset =  clk.pulse( p.staff_index )
             #print(offset, p.pattern.sample(p.repeat_index).wave)
-            wav.overlay(p.pattern.sample(p.repeat_index).wave , offset=offset)
+            wav.overlay(p.sample.wave , offset=offset)
 
         return wav
 

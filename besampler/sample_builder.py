@@ -4,6 +4,8 @@ from .wavefile import WaveFile
 from .sample   import Sample
 from .utils   import Clock
 
+from .player import ProgEntry
+
 class SampleBuilder(object):
     def __init__(self, bpm, frame_rate):
         self._bpm = bpm
@@ -29,3 +31,7 @@ class SampleBuilder(object):
             wav.overlay(sample.wave , offset=offset)
 
         return Sample(wav, offset_ms = max_offset)
+    
+    def apply(self, pattern, idx, programm, score, staff, staffline, artist, repeat_index  ):
+        programm.append( ProgEntry( self.sample(repeat_index), repeat_index, idx) )
+        return len(pattern)

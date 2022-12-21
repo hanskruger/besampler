@@ -9,6 +9,7 @@ from pathlib import Path
 from functools import total_ordering
 
 from .wavefile import WaveFile
+from .player import ProgEntry
 
 class Sample():
     def __init__(self, file_name, offset_ms = 0, bpm = 100):
@@ -33,8 +34,6 @@ class Sample():
 
         # check correct frame rate etc.
 
-
-
         pass
 
     @property
@@ -52,3 +51,7 @@ class Sample():
     @property
     def wave(self):
         return self._wave
+    
+    def apply(self, pattern, idx, programm, score, staff, staffline, artist, repeat_index  ):
+        programm.append( ProgEntry( self, repeat_index, idx) )
+        return len(pattern)

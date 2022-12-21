@@ -11,7 +11,6 @@ from functools import total_ordering
 from .wavefile import WaveFile
 from .pattern import Pattern
 
-
 class Instrument():
     pass
     def __init__(self, name, bpm = 120):
@@ -30,6 +29,7 @@ class Instrument():
         for p in patterns:
             self._patterns[p] = pat
         return pat
+
 
     def __iter__(self):
         return iter(self._patterns.values())

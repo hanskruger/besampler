@@ -50,9 +50,13 @@ def estacio_caixa():
     cax.add_pattern("|XxLx X.X. X...").add_samples(
             Sample("samples/estácio/100bpm/caixa-virada1-1.wav"),
             Sample("samples/estácio/100bpm/caixa-virada1-2.wav"))
-    cax.add_pattern("|/ / / /").add_samples(
-            Sample("samples/estácio/100bpm/caixa-groove-1.wav"),
-            Sample("samples/estácio/100bpm/caixa-groove-2.wav"))
+    cax.add_pattern("|/ / / /") \
+            .add_samples(
+                Sample("samples/estácio/100bpm/caixa-groove-1.wav"),
+                Sample("samples/estácio/100bpm/caixa-groove-2.wav")
+                ) \
+            .alias("xxxx xxxx xxxx xxxx") 
+
 
     cax.add_pattern("/").add_samples(
             Sample("samples/estácio/100bpm/caixa-single_groove-1.wav"),
