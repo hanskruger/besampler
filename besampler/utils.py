@@ -7,6 +7,17 @@ import wave
 from pydub import AudioSegment
 from pathlib import Path
 from math import floor
+import hashlib
+import mmap
+
+def sha256sum(filename):
+    h  = hashlib.sha256()
+    with open(filename, 'rb') as f:
+        with mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ) as mm:
+            h.update(mm)
+    return h.hexdigest() 
+
+
 
 class Clock():
     def __init__(self, bpm, frame_rate = 48000, offset_ms = 0):

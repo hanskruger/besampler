@@ -49,16 +49,25 @@ class Player():
         self._freq = 48000;
         self._artist = {}
         self._click  = None  
-        self._out_dir = Path(".") 
+        self._out_dir = Path(".")
+        self._track_cb = lambda snd,artist,score : True
+
+    def add_track_callback(self, cb):
+        '''
+        Provide a callback that will be called once an inidvidual mono track has been creted for a given artist. 
+        Allows calling applicaitonn to store individual tracks.
+
+        The callback must accept 3 argument: the sound-file, the artist and the score
+        '''
+        self._track_cb = cb
 
     def __synth_measure(self, m):
         pass
 
-
-    def add_artist(self, name, staff, instrument, setting = InstrumentSettings()):
+    def add_artist(self, name, staff, instrument, settings = InstrumentSettings()):
         Artist = namedtuple("Artist",["name", "staff","settings", "instrument"])
-        self._artist.setdefault(staff, []).append(Artist(name, staff, setting, instrument))
-        return setting
+        self._artist.setdefault(staff, []).append(Artist(name, staff, settings, instrument))
+        return settings
 
     def _compile_artist(self, artist, staff, score):
         Prog      = namedtuple("Prog",["programm", ])
@@ -114,8 +123,6 @@ class Player():
         lenght_ms      = 60000.0 * score.length * score.time_signature.pulses / self._bpm
         lenght_samples = lenght_ms * self._freq / 1000.0
         instrument = artis.instrument
-        filename = self._out_dir / Path( f"{instrument.name}_{artis.name}.wav")
-        logging.info(f"Writing track for artist {instrument.name}/{artis.name} to {filename}.")
 
         wav = WaveFile.silence(lenght_ms, self._freq)
 
@@ -124,8 +131,7 @@ class Player():
             #print(offset, p.pattern.sample(p.repeat_index).wave)
             wav.overlay(p.pattern.sample(p.repeat_index).wave , offset=offset)
 
-        wav.export(filename)
-        return filename
+        return wav
 
     def synthesize(self, score, staff = None):
 
@@ -141,7 +147,7 @@ class Player():
         logging.info(f"Total length of this score is {score.length * score.time_signature.pulses} beats, {lenght_ms/1000}s")
 
         instruments = []
-
+        out = None
 
         # pass 2: Check for instrumetns for all staff lines
         for s in staffs:
@@ -151,22 +157,20 @@ class Player():
             for i in self._artist[s.name]:
                 # pass 3: For each staff line and isntrument, generate the wave file
                 prog = self._compile_artist(i, s, score)
-                self._synth_artist(prog, i, score)
+                snd = self._synth_artist(prog, i, score)
+                self._track_cb(snd, i, score)
                 #print(prog.programm)
 
                 # pass 4: Apply PAN, gain, deplay etc. for each instrument
+                snd.delay(i.settings.delay_ms) \
+                    .gain(i.settings.gain)     \
+                    .to_stereo(i.settings.pan)
+                # pass 5: Apply dynamics for each instrument or instrument groups
 
+                # pass 6: Merge all wave files into one
+                out = snd if None is out else out.overlay(snd, 0)
 
-
-        # generte count-in and click track
-        if (self._click):
-            pass
-
-
-
-        # pass 5: Apply dynamics for each instrument or instrument groups
-
-        # pass 6: Merge all wave files into one
+        return out
 
 
 

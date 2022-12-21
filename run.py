@@ -19,10 +19,14 @@ parser = argparse.ArgumentParser(
                     prog = 'Bloco Esperança Sampler',
                     description = 'Sample Samba Breaks using short samples.')
 parser.add_argument('score', type=Path, help="The score to be sampled")           # positional argument
+parser.add_argument('out',   type=Path, help="name of the output file")           # positional argument
 parser.add_argument('-v', '--verbose', action='store_true')  # on/off flag
 parser.add_argument('-D', '--debug', action='store_true')  # on/off flag
 parser.add_argument('--count_in', action='store_true')  # on/off flag
 parser.add_argument('--click', action='store_true')  # on/off flag
+parser.add_argument('--tracks', action='store_true')
+parser.add_argument('-f', '--format', help='fomrat of output (wav|mp3)')  # on/off flag
+
 
 def click():
     ins = Instrument("Click", bpm = 100)
@@ -152,6 +156,11 @@ def main(args):
    
     if (not args.score or not args.score.exists()):
         raise RuntimeError(f"File {args.score} does not exist")
+    
+    def write_track_cb(snd, artist, score):
+        filename = Path( f"{artist.instrument.name}_{artist.name}.wav")
+        logging.info(f"Writing track for artist {artist.instrument.name}/{artist.name} to {filename}.")
+        snd.export(filename)
 
     player = Player(bpm = 100)
 
@@ -159,6 +168,9 @@ def main(args):
     player.add_artist("apito",    staff="Apito",    instrument=apito())
     player.add_artist("click",    staff="Click",    instrument=click())
     player.add_artist("count_in", staff="Count In", instrument=apito())
+    
+    if (args.tracks):
+        player.add_track_callback(write_track_cb)
 
     score = Score.from_file(args.score)
     if(args.count_in):
@@ -166,7 +178,8 @@ def main(args):
     if(args.click):
         score.add_click()
     #score = bossa()
-    player.synthesize(score)
+    snd = player.synthesize(score)
+    snd.export(args.out)
 
 
 if __name__ == "__main__":

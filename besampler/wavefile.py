@@ -21,6 +21,10 @@ class WaveFile(object):
         ret._audio_data = audio_data
         return ret
 
+    
+    def export(self, filename):
+        return self._audio_data.export(filename)
+
     @staticmethod
     def silence(length_ms, hz):
         ret = WaveFile(length_ms, hz)
@@ -49,6 +53,33 @@ class WaveFile(object):
     def number_of_samples(self):
         return self._frame_rate * len(self._audio_data)
 
+    def delay(self, ms):
+        if (0 == ms):
+            return self
+        if (not self._audio_data):
+            raise RuntimeError("Nothing to delay")
+        if (ms < 0):
+            raise RuntimeError("Dealy must be a positive number")
+
+
+        new_data =  AudioSegment.silent(duration = ms, frame_rate = self._audio_data.frame_rate) + self._audio_data
+        self._audio_data = new_data
+        return self
+
+    def to_stereo(self, pan = 0.0):
+        stereo_sound = AudioSegment.from_mono_audiosegments(self._audio_data, self._audio_data)
+        if (0 != pan):
+            stereo_sound = stereo_sound.pan(pan)
+        self._audio_data = stereo_sound
+        return self
+
+    def gain(self, db):
+        self._audio_data = self._audio_data.apply_gain(db) 
+        return self
+
+    def pan(self, pan = 0.0):
+        self._audio_data = self._audio_data.pan(pan) 
+        return self
 
 
 
