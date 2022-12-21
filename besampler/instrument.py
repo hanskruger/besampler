@@ -45,3 +45,12 @@ class Instrument():
         return self._name
     def __repr__(self):
         return f"<Instrument {self._name} at 0x{id(self):x}>"
+    
+    def __hash__(self):
+        return hash(f"Instrument<{self._name}>")
+
+    def __eq__(self, other):
+        return isinstance(other, Instrument) and self._name == other.name
+
+    def __lt__(self, other):
+        return isinstance(other, Instrument) and self._name < other.name

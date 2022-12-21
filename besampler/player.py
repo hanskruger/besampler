@@ -52,6 +52,10 @@ class Player():
         self._out_dir = Path(".")
         self._track_cb = lambda snd,artist,score : True
 
+    @property
+    def bpm(self):
+        return self._bpm
+
     def add_track_callback(self, cb):
         '''
         Provide a callback that will be called once an inidvidual mono track has been creted for a given artist. 
@@ -64,8 +68,16 @@ class Player():
     def __synth_measure(self, m):
         pass
 
+    @property
+    def instruments(self):
+        instruments = []
+        for staff in self._artist.values():
+            instruments.extend( map(lambda x: x.instrument, staff))
+        return list(set(instruments))
+
     def add_artist(self, name, staff, instrument, settings = InstrumentSettings()):
         Artist = namedtuple("Artist",["name", "staff","settings", "instrument"])
+        # artists are added grouped by the staff they play!
         self._artist.setdefault(staff, []).append(Artist(name, staff, settings, instrument))
         return settings
 

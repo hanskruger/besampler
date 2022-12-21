@@ -23,6 +23,19 @@ class Score():
     def add_staff(self, staff):
         return staff
 
+        
+    @property
+    def staffs(self):
+        '''
+        Return the list osf staffs/Instruments in the score
+        '''
+        staffs = []
+        for m in self.measures():
+            for s in m:
+                staffs.append(s.staff)
+        return list( set(staffs))
+
+
     def add_count_in(self, pattern = "x x x x", staff = Staff("Count In")):
         '''
         Prepends a bar with a count in.
