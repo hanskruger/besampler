@@ -31,6 +31,17 @@ parser.add_argument('--tracks', action='store_true')
 parser.add_argument('--bpm', default=100, type=int, help="The output speed")
 parser.add_argument('-f', '--format', default="mp3", help='format of output (wav|mp3)')  # on/off flag
 
+parser.add_argument('--mute', help='Mute the given aritsts.')  # on/off flag
+#parser.add_argument('--mute_staff', help='Mute all artists of the given staff.')  # on/off flag
+#parser.add_argument('--mute_instrument', help='Mute all artist of the given instruments.')  # on/off flag
+parser.add_argument('--mute_level', default=-60.0, type=float, help='Amount in dB, by which artitsts should be muted.')  # on/off flag
+
+parser.add_argument('--solo', help='Only play the artists listed.')  # on/off flag
+#parser.add_argument('--solo_staff', help='Only play the artists playing a given staff.')  # on/off flag
+#parser.add_argument('--solo_instrument', help='Only play the artists playinf the given instruments.')  # on/off flag
+
+
+
 def click():
     ins = Instrument("Click", bpm = 100)
     ins.add_pattern("X").add_samples(
@@ -288,7 +299,7 @@ def terceira():
 def segunda():
     ins = Instrument("Segunda", bpm = 100)
     ins.add_pattern("2...").alias("x...", "x").add_samples(
-            Sample("samples/estácio/100bpm/surdo_2a-1.wav"), 
+            Sample("samples/estácio/100bpm/surdo_2a-1.wav"),
             Sample("samples/estácio/100bpm/surdo_2a-2.wav"))
     ins.add_pattern("2.2.").alias("x.x.", "22", "xx").add_samples(
             SampleBuilder(100, 48000)
@@ -504,6 +515,8 @@ def bossa():
 
     return sc
 
+
+
 def print_info(args, score, player):
     MSG= f"""# Info about score and player
 score.filename:       {args.score}
@@ -511,7 +524,7 @@ score.time.signature: {score.time_signature.pulses}/{score.time_signature.note_v
 score.staffs:         {", ".join(map(str, score.staffs))}
 player.bpm:           {player.bpm}
 player.instruments:   {", ".join(map(str, player.instruments))}
-player.artists:       {", ".join(map(str, player.artists))}
+player.artists:       {", ".join(map(lambda x: x.name, player.artists))}
 """
     print(MSG)
 
@@ -539,6 +552,23 @@ def main(args):
     player.add_artist("click",    staff="Click",    instrument=click())
     player.add_artist("count_in", staff="Count In", instrument=apito())
 
+
+    muted_artists = []
+
+    if (args.mute):
+        muted_artists = set(map(lambda x: x.strip(),args.mute.split(",")))
+    if (args.solo):
+        solo_artits = set(map(lambda x: x.strip(),args.solo.split(",")))
+        all_artists = set(map(lambda x: x.name, player.artists))
+        muted_artists = list(all_artists - solo_artits) 
+
+
+
+    if muted_artists:
+        for a in player.artists:
+            if a.name in muted_artists:
+                a.settings.set_gain( a.settings.gain + args.mute_level )
+                logging.debug(f"Setting gain for artist {a.name} to {a.settings.gain}dB.")
 
     if (args.tracks):
         player.add_track_callback(write_track_cb)

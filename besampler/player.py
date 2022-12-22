@@ -82,8 +82,8 @@ class Player():
     def artists(self):
         ret = []
         for staff in self._artist.values():
-            ret.extend( map(lambda x: x.name, staff))
-        return list(set(ret))
+            for a in staff:
+                yield a
 
     def add_artist(self, name, staff, instrument, settings = None):
         settings = InstrumentSettings() if not settings else settings
@@ -177,6 +177,10 @@ class Player():
                 logging.warning(f"No artist given for staff {s}.")
                 continue
             for i in self._artist[s.name]:
+                if (i.settings.gain <= -60.0):
+                    logging.debug(f"Skipping artist {i.name} because he/she is muted (gain <= -60db).")
+                    continue
+
                 # pass 3: For each staff line and isntrument, generate the wave file
                 prog = self._compile_artist(i, s, score)
                 snd = self._synth_artist(prog, i, score)
