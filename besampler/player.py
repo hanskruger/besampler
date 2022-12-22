@@ -77,8 +77,16 @@ class Player():
         for staff in self._artist.values():
             instruments.extend( map(lambda x: x.instrument, staff))
         return list(set(instruments))
+    
+    @property
+    def artists(self):
+        ret = []
+        for staff in self._artist.values():
+            ret.extend( map(lambda x: x.name, staff))
+        return list(set(ret))
 
-    def add_artist(self, name, staff, instrument, settings = InstrumentSettings()):
+    def add_artist(self, name, staff, instrument, settings = None):
+        settings = InstrumentSettings() if not settings else settings
         Artist = namedtuple("Artist",["name", "staff","settings", "instrument"])
         # artists are added grouped by the staff they play!
         self._artist.setdefault(staff, []).append(Artist(name, staff, settings, instrument))

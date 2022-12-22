@@ -31,8 +31,8 @@ class WaveFile(object):
         ret._audio_data = AudioSegment.silent(duration = length_ms, frame_rate = hz)
         return ret
 
-    def export(self, name):
-        self._audio_data.export(name, format="wav")
+    def export(self, name, **kwargs):
+        self._audio_data.export(name, **kwargs)
 
     def overlay(self, other, offset):
         new_data = self._audio_data.overlay(other._audio_data, position=offset)
@@ -72,6 +72,12 @@ class WaveFile(object):
             stereo_sound = stereo_sound.pan(pan)
         self._audio_data = stereo_sound
         return self
+
+    def speedup(self, ratio= 1.0):
+        if (1.0 == ratio):
+            return self
+        self._audio_data = self._audio_data.speedup(1.35, 150, 25)
+        
 
     def gain(self, db):
         self._audio_data = self._audio_data.apply_gain(db) 

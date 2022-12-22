@@ -28,8 +28,8 @@ parser.add_argument('--count_in', action='store_true')  # on/off flag
 parser.add_argument('--click', action='store_true')  # on/off flag
 parser.add_argument('--info', action='store_true', help="print score info and exit")
 parser.add_argument('--tracks', action='store_true')
-parser.add_argument('-f', '--format', help='fomrat of output (wav|mp3)')  # on/off flag
-
+parser.add_argument('--bpm', default=100, type=int, help="The output speed")
+parser.add_argument('-f', '--format', default="mp3", help='format of output (wav|mp3)')  # on/off flag
 
 def click():
     ins = Instrument("Click", bpm = 100)
@@ -39,10 +39,34 @@ def click():
             Sample("samples/click-soft.wav"))
     return ins
 
+def voz():
+    ins = Instrument("Click", bpm = 100)
+    ins.add_pattern("ES..").add_samples(
+            Sample("samples/voz-es.wav"))
+    ins.add_pattern("PE..").add_samples(
+            Sample("samples/voz-pe.wav"))
+    ins.add_pattern("RAN.").add_samples(
+            Sample("samples/voz-ran.wav"))
+    ins.add_pattern("CA..").add_samples(
+            Sample("samples/voz-ca.wav"))
+    ins.add_pattern("ESPE").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/voz-es.wav"))
+                .add_subsample(Sample("samples/voz-pe.wav"), ".x")
+                .build()
+                )
+    return ins
+
 def apito():
     ins = Instrument("Apito", bpm = 100)
     ins.add_pattern("x").add_samples(
             Sample("samples/whistle.wav"))
+    ins.add_pattern("x.x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/whistle.wav"))
+                .add_subsample(Sample("samples/whistle.wav"), ".x")
+                .build()
+                )
     return ins
 
 def repi():
@@ -60,9 +84,20 @@ def repi():
                 .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".x")
                 .build()
                 )
+    cax.add_pattern("x..x").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), "...x")
+                .build()
+                )
     cax.add_pattern("..x.").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".x")
+                .build()
+                )
+    cax.add_pattern(".x..").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".x..")
                 .build()
                 )
     cax.add_pattern("x.x").add_samples(
@@ -82,21 +117,18 @@ def repi():
 
 def estacio_caixa():
     cax = Instrument("caixa", bpm = 100)
-    cax.add_pattern("|XxLx X.X. X...").add_samples(
-            Sample("samples/estácio/100bpm/caixa-virada1-1.wav"),
-            Sample("samples/estácio/100bpm/caixa-virada1-2.wav"))
+    cax.add_pattern("|XxLx").add_samples(
+            Sample("samples/estácio/100bpm/caixa-xxlx-1.wav"),
+            Sample("samples/estácio/100bpm/caixa-xxlx-2.wav"))
     cax.add_pattern("|/ / / /") \
             .add_samples(
-                Sample("samples/estácio/100bpm/caixa-groove-1.wav"),
-                Sample("samples/estácio/100bpm/caixa-groove-2.wav")
-                ) \
-            .alias("xxxx xxxx xxxx xxxx") 
-
+                Sample("samples/estácio/100bpm/caixa-groove-1.wav")
+                )
 
     cax.add_pattern("/").alias("xxxx").add_samples(
-            Sample("samples/estácio/100bpm/caixa-single_groove-1.wav"),
-            Sample("samples/estácio/100bpm/caixa-single_groove-2.wav"),
-            Sample("samples/estácio/100bpm/caixa-single_groove-3.wav"))
+            Sample("samples/estácio/100bpm/caixa-xxxx-1.wav"),
+            Sample("samples/estácio/100bpm/caixa-xxxx-2.wav"),
+            Sample("samples/estácio/100bpm/caixa-xxxx-3.wav"))
 
     cax.add_pattern("x...").add_samples(
             Sample("samples/estácio/100bpm/caixa-x___-1.wav"))
@@ -107,9 +139,20 @@ def estacio_caixa():
                 .add_subsample(Sample("samples/estácio/100bpm/caixa-x___-1.wav"), ".x")
                 .build()
                 )
+    cax.add_pattern("x..x").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/caixa-x___-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/caixa-x___-1.wav"), "...x")
+                .build()
+                )
     cax.add_pattern("..x.").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/caixa-x___-1.wav"), ".x")
+                .build()
+                )
+    cax.add_pattern(".x..").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/caixa-x___-1.wav"), ".x..")
                 .build()
                 )
     cax.add_pattern("x.x").add_samples(
@@ -149,6 +192,12 @@ def primeira():
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_1a-1.wav"), ".x")
                 .build()
                 )
+    ins.add_pattern("1..1").alias("x..x"). add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_1a-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_1a-1.wav"), "...x")
+                .build()
+                )
     ins.add_pattern("..1.").alias("..x.").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_1a-1.wav"), ".x")
@@ -183,11 +232,18 @@ def primeira():
 def terceira():
     ins = Instrument("Terceira", bpm = 100)
     ins.add_pattern("3...").alias("3", "x", "x...").add_samples(
-            Sample("samples/estácio/100bpm/surdo_3a-1.wav"))
+            Sample("samples/estácio/100bpm/surdo_3a-1.wav"),
+            Sample("samples/estácio/100bpm/surdo_3a-2.wav"))
     ins.add_pattern("3.3.").alias("33", "xx", "x.x.").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"))
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), ".x")
+                .build()
+                )
+    ins.add_pattern("3..3").alias("x..x").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), "...x")
                 .build()
                 )
     ins.add_pattern("..3.").alias("..x.").add_samples(
@@ -232,11 +288,18 @@ def terceira():
 def segunda():
     ins = Instrument("Segunda", bpm = 100)
     ins.add_pattern("2...").alias("x...", "x").add_samples(
-            Sample("samples/estácio/100bpm/surdo_2a-1.wav"))
+            Sample("samples/estácio/100bpm/surdo_2a-1.wav"), 
+            Sample("samples/estácio/100bpm/surdo_2a-2.wav"))
     ins.add_pattern("2.2.").alias("x.x.", "22", "xx").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_2a-1.wav"))
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_2a-1.wav"), ".x")
+                .build()
+                )
+    ins.add_pattern("2..2").alias("x..x").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_2a-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_2a-1.wav"), "...x")
                 .build()
                 )
     ins.add_pattern("..2.").alias("..x.").add_samples(
@@ -291,6 +354,22 @@ def tamborim():
                 .add_subsample(Sample("samples/estácio/100bpm/tamborim-x-1.wav"), ".x")
                 .build()
                 )
+    ins.add_pattern("..x.").alias("xx").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/tamborim-x-1.wav"), ".x")
+                .build()
+                )
+    ins.add_pattern(".x..").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/tamborim-x-1.wav"), ".x..")
+                .build()
+                )
+    ins.add_pattern("x..x").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/tamborim-x-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/tamborim-x-1.wav"), "...x")
+                .build()
+                )
     ins.add_pattern("x.x").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/tamborim-x-1.wav"))
@@ -322,9 +401,20 @@ def chocalho():
                 .add_subsample(Sample("samples/estácio/100bpm/chocalho-x-1.wav"), ".x")
                 .build()
                 )
+    ins.add_pattern("x..x").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/chocalho-x-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/chocalho-x-1.wav"), "...x")
+                .build()
+                )
     ins.add_pattern("..x.").alias(".x").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/chocalho-x-1.wav"), ".x")
+                .build()
+                )
+    ins.add_pattern(".x..").alias(".x").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/chocalho-x-1.wav"), ".x..")
                 .build()
                 )
     ins.add_pattern("xxx").add_samples(
@@ -421,6 +511,7 @@ score.time.signature: {score.time_signature.pulses}/{score.time_signature.note_v
 score.staffs:         {", ".join(map(str, score.staffs))}
 player.bpm:           {player.bpm}
 player.instruments:   {", ".join(map(str, player.instruments))}
+player.artists:       {", ".join(map(str, player.artists))}
 """
     print(MSG)
 
@@ -432,17 +523,18 @@ def main(args):
     def write_track_cb(snd, artist, score):
         filename = Path( f"{artist.instrument.name}_{artist.name}.wav")
         logging.info(f"Writing track for artist {artist.instrument.name}/{artist.name} to {filename}.")
-        snd.export(filename)
+        snd.export(filename, format="wav")
 
     player = Player(bpm = 100)
 
-    player.add_artist("cho1",     staff="Chocalho", instrument=chocalho())
-    player.add_artist("tam1",     staff="Tamborim", instrument=tamborim())
+    player.add_artist("cho1",     staff="Chocalho", instrument=chocalho()).set_pan(0.2).set_gain(-6)
+    player.add_artist("tam1",     staff="Tamborim", instrument=tamborim()).set_pan(0.3)
     player.add_artist("rep1",     staff="Repi",     instrument=repi())
-    player.add_artist("cax1",     staff="Caixa",    instrument=estacio_caixa())
-    player.add_artist("1a",       staff="Primeira", instrument=primeira()).set_pan(0.4).set_gain(-3)
-    player.add_artist("2a",       staff="Segunda",  instrument=segunda()).set_pan(-0.4).set_gain(-3)
-    player.add_artist("3a",       staff="Terceira", instrument=terceira()).set_gain(-4)
+    player.add_artist("cax1",     staff="Caixa",    instrument=estacio_caixa()).set_pan(-0.1).set_gain(1.0)
+    player.add_artist("1a",       staff="Primeira", instrument=primeira()).set_pan(0.6).set_gain(-6)
+    player.add_artist("2a",       staff="Segunda",  instrument=segunda()).set_pan(-0.6).set_gain(-6)
+    player.add_artist("3a",       staff="Terceira", instrument=terceira()).set_gain(-6)
+    player.add_artist("voz",      staff="Voz",      instrument=voz())
     player.add_artist("apito",    staff="Apito",    instrument=apito())
     player.add_artist("click",    staff="Click",    instrument=click())
     player.add_artist("count_in", staff="Count In", instrument=apito())
@@ -464,10 +556,12 @@ def main(args):
         score.add_click()
     #score = bossa()
     snd = player.synthesize(score)
+
+    snd.speedup( args.bpm / player.bpm)
     #x = snd._audio_data.speedup(1.35, 150, 25)
     #x.export(args.out, format="wav")
     if (args.out):
-        snd.export(args.out)
+        snd.export(args.out, format=args.format)
     else:
         play(snd._audio_data)
 
