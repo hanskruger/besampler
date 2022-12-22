@@ -35,6 +35,13 @@ class Score():
                 staffs.append(s.staff)
         return list( set(staffs))
 
+    def loop(self, num):
+        new_score = [] 
+        for i in range(num):
+            new_score.extend(self._score)
+        self._score = new_score
+        return self 
+
 
     def add_count_in(self, pattern = "x x x x", staff = Staff("Count In")):
         '''
