@@ -18,3 +18,5 @@ setup(
     packages=['besamüpler'],
     long_description=__doc__,
 )
+
+# dependencies: colorlog, numpy

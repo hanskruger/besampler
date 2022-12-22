@@ -9,8 +9,54 @@ from pathlib import Path
 from functools import total_ordering
 
 from .utils import TimeSignature, Clock
-from .measure import match_pause
-from .player import ProgEntry
+
+def match_pause(s):
+    '''
+    Returns true, is a beat of only pause is matched.
+    >>> match_pause("") is not None
+    True
+    >>> match_pause("     ") is not None
+    True
+    >>> match_pause(".") is not None
+    True
+    >>> match_pause("..") is not None
+    True
+    >>> match_pause("....") is not None
+    True
+    >>> match_pause("-") is not None
+    True
+    >>> match_pause("-x-") is not None
+    False
+    >>> match_pause(".X..") is not None
+    False
+    '''
+   
+    # hard match commom pauise patterns to speed up detection
+    if ("-" == s or "...." == s or "..." == s):
+        return True
+    PAUSE_PATTERN = "^\\s*(\\.+|-)\\s*$"
+    if (not s or "" == s.strip()):
+        return "-"
+
+    if (m := re.match(PAUSE_PATTERN, s)):
+        return m.group(1)
+    return None
+
+def match_repeat(s):
+    '''
+    Returns true, is a beat of only pause is matched.
+    
+    >>> match_repeat(" % ") is not None
+    True
+    >>> match_repeat(" %% ") is None
+    True
+    '''
+
+    PATTERN = "^\\s*(%)\\s*$"
+    
+    if (m := re.match(PATTERN, s)):
+        return m.group(1)
+    return None
 
 def match_head_on_1(inp):
     if inp and "|" == inp[0]:
@@ -19,6 +65,8 @@ def match_head_on_1(inp):
 
 def normalize_beat(inp):
     return inp
+
+TONE_PATTERN = "[a-zA-B0-9]"
 
 def match_pattern(pattern, staff_line, idx, head_index, time_signature, on_beat_1 ):
     '''
@@ -36,10 +84,27 @@ def match_pattern(pattern, staff_line, idx, head_index, time_signature, on_beat_
             return False
     return True
 
+def parse_tone(tone):
+    if not tone:
+        return ""
+    if (match_pause(tone)):
+        return ""
+    if (m := re.match(f"^({TONE_PATTERN})\\.+$", tone)):
+        return m.group(1)
+    return tone
+
+def parse_staffline():
+    pass
+
+def parse_measure():
+    pass
+
 def parse_pattern(pattern):
+    RetVal    = namedtuple("PatternParsing",["pattern", "on_beat_1" ])
     on_beat_1 = match_head_on_1(pattern)
-    beats   = re.split("\\s+", pattern.strip(" \t|"))
-    return beats, on_beat_1
+    beats   = list(map(parse_tone, re.split("\\s+", pattern.strip(" \t|"))))
+
+    return RetVal(beats, on_beat_1)
 
 class Pattern():
     def __init__(self, pattern):
@@ -65,8 +130,9 @@ class Pattern():
                 return True
         return False 
     
-    def alias(self, pattern):
-        self._aliases.append( parse_pattern(pattern)[0] )
+    def alias(self, *patterns):
+        for pattern in patterns:
+            self._aliases.append( parse_pattern(pattern).pattern )
         return self
 
     def __len__(self):

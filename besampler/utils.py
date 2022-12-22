@@ -72,6 +72,10 @@ class Clock():
         else:
             raise RuntimeError("shift inidactor must consost of dots (.) with one x only.")
 
+    @property
+    def pulse_length_ms(self):
+        return 60.0 * 1000.0 / self._bpm
+
     def to_ms(self):
         return datetime.timedelta(milliseconds= int(self._offset/self._hz))
 

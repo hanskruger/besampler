@@ -10,54 +10,10 @@ from functools import total_ordering
 
 from .utils import TimeSignature, Clock
 from .wavefile import WaveFile
+from .pattern import match_pause, match_repeat
 
 def ms(value):
     return datetime.timedelta(milliseconds=int(value))
-
-def match_repeat(s):
-    '''
-    Returns true, is a beat of only pause is matched.
-    
-    >>> match_repeat(" % ") is not None
-    True
-    >>> match_repeat(" %% ") is None
-    True
-    '''
-
-    PATTERN = "^\\s*(%)\\s*$"
-    
-    if (m := re.match(PATTERN, s)):
-        return m.group(1)
-    return None
-
-def match_pause(s):
-    '''
-    Returns true, is a beat of only pause is matched.
-    >>> match_pause("") is not None
-    True
-    >>> match_pause("     ") is not None
-    True
-    >>> match_pause(".") is not None
-    True
-    >>> match_pause("..") is not None
-    True
-    >>> match_pause("....") is not None
-    True
-    >>> match_pause("-") is not None
-    True
-    >>> match_pause("-x-") is not None
-    False
-    >>> match_pause(".X..") is not None
-    False
-    '''
-
-    PAUSE_PATTERN = "^\\s*(\\.+|-)\\s*$"
-    if (not s or "" == s.strip()):
-        return "-"
-
-    if (m := re.match(PAUSE_PATTERN, s)):
-        return m.group(1)
-    return None
 
 
 class Measure():

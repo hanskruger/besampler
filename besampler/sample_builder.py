@@ -3,7 +3,6 @@ import tempfile
 from .wavefile import WaveFile
 from .sample   import Sample
 from .utils   import Clock
-
 from .player import ProgEntry
 
 class SampleBuilder(object):
@@ -23,7 +22,7 @@ class SampleBuilder(object):
         
         clk = Clock(self._bpm, frame_rate=self._frame_rate, offset_ms = max_offset)
         
-        wav = WaveFile.silence(max_length + max_offset, self._frame_rate)
+        wav = WaveFile.silence(max_length + max_offset + clk.pulse_length_ms, self._frame_rate)
         
         for sample, shift in self._build_instructions:
             offset = clk.pulse( 0, shift ) - sample.offset_ms

@@ -11,7 +11,7 @@ from functools import total_ordering
 from math import ceil
 
 from .wavefile import WaveFile
-from .measure  import match_pause, match_repeat
+from .pattern  import match_pause, match_repeat, parse_tone
 from .utils    import Clock
 
 Prog      = namedtuple("Prog",["programm", ])
@@ -91,9 +91,8 @@ class Player():
         instrument = artist.instrument
         measures = list(score.measures(staff))
         #print(staff, measures)
-        staff_line = list(reduce(lambda a,b: a+b,  map(lambda x: x.measure.notes if x else ONE_BAR_PAUSE, measures)))
+        staff_line = list(map(parse_tone, reduce(lambda a,b: a+b,  map(lambda x: x.measure.notes if x else ONE_BAR_PAUSE, measures))))
         prog = []
-        #print(staff, staff_line)
         last_pattern = None
 
         idx, mcount = 0, len(staff_line)
