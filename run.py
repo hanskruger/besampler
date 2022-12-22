@@ -45,6 +45,41 @@ def apito():
             Sample("samples/whistle.wav"))
     return ins
 
+def repi():
+    cax = Instrument("Repi", bpm = 100)
+    cax.add_pattern("cccc cccc").add_samples(
+            Sample("samples/estácio/100bpm/repi-chamada-1.wav"))
+    cax.add_pattern("x").add_samples(
+            Sample("samples/estácio/100bpm/repi-x-1.wav"))
+    cax.add_pattern("xxxx").alias("/").add_samples(
+            Sample("samples/estácio/100bpm/repi-xxxx-1.wav"),
+            Sample("samples/estácio/100bpm/repi-xxxx-2.wav"))
+    cax.add_pattern("x.x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".x")
+                .build()
+                )
+    cax.add_pattern("..x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".x")
+                .build()
+                )
+    cax.add_pattern("x.x").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), "..x")
+                .build()
+                )
+    cax.add_pattern("xxx").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".x.")
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), "..x")
+                .build()
+                )
+    return cax
+
 def estacio_caixa():
     cax = Instrument("caixa", bpm = 100)
     cax.add_pattern("|XxLx X.X. X...").add_samples(
@@ -119,6 +154,11 @@ def primeira():
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_1a-1.wav"), ".x")
                 .build()
                 )
+    ins.add_pattern(".1..").alias(".x..").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_1a-1.wav"), ".x..")
+                .build()
+                )
     ins.add_pattern("1.1").alias("x.x").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_1a-1.wav"))
@@ -153,6 +193,11 @@ def terceira():
     ins.add_pattern("..3.").alias("..x.").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), ".x")
+                .build()
+                )
+    ins.add_pattern(".3..").alias(".x..").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), ".x..")
                 .build()
                 )
     ins.add_pattern("3.3").alias("x.x").add_samples(
@@ -197,6 +242,11 @@ def segunda():
     ins.add_pattern("..2.").alias("..x.").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_2a-1.wav"), ".x")
+                .build()
+                )
+    ins.add_pattern(".2..").alias(".x..").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_2a-1.wav"), ".x..")
                 .build()
                 )
     ins.add_pattern("2.2").alias("x.x").add_samples(
@@ -388,6 +438,7 @@ def main(args):
 
     player.add_artist("cho1",     staff="Chocalho", instrument=chocalho())
     player.add_artist("tam1",     staff="Tamborim", instrument=tamborim())
+    player.add_artist("rep1",     staff="Repi",     instrument=repi())
     player.add_artist("cax1",     staff="Caixa",    instrument=estacio_caixa())
     player.add_artist("1a",       staff="Primeira", instrument=primeira()).set_pan(0.4).set_gain(-3)
     player.add_artist("2a",       staff="Segunda",  instrument=segunda()).set_pan(-0.4).set_gain(-3)
