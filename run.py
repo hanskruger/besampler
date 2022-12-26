@@ -52,19 +52,26 @@ def click():
     return ins
 
 def voz():
-    ins = Instrument("Click", bpm = 100)
-    ins.add_pattern("ES..").add_samples(
-            Sample("samples/voz-es.wav"))
-    ins.add_pattern("PE..").add_samples(
-            Sample("samples/voz-pe.wav"))
-    ins.add_pattern("RAN.").add_samples(
-            Sample("samples/voz-ran.wav"))
-    ins.add_pattern("CA..").add_samples(
-            Sample("samples/voz-ca.wav"))
-    ins.add_pattern("ESPE").add_samples(
+    ins = Instrument("Voz", bpm = 100)
+    ins.add_pattern("1").add_samples(Sample("samples/100bpm/voz-um-1.wav"))
+    ins.add_pattern("2").add_samples(Sample("samples/100bpm/voz-dois-1.wav"))
+    ins.add_pattern("3").add_samples(Sample("samples/100bpm/voz-tres-1.wav"))
+    ins.add_pattern("4").add_samples(Sample("samples/100bpm/voz-quatro-1.wav"))
+    ins.add_pattern("hey.").add_samples(Sample("samples/100bpm/voz-hey-1.wav"))
+    ins.add_pattern("nana nana na.. na..").add_samples(
+            Sample("samples/100bpm/voz-nana_nana_na_na-1.wav"))
+    ins.add_pattern("ca..").add_samples(
+            Sample("samples/100bpm/voz-ca-1.wav"))
+    ins.add_pattern("es..").add_samples(
+            Sample("samples/100bpm/voz-es-1.wav"))
+    ins.add_pattern("pe..").add_samples(
+            Sample("samples/100bpm/voz-pe-1.wav"))
+    ins.add_pattern("ran.").add_samples(
+            Sample("samples/100bpm/voz-ran-1.wav"))
+    ins.add_pattern("espe").add_samples(
             SampleBuilder(100, 48000)
-                .add_subsample(Sample("samples/voz-es.wav"))
-                .add_subsample(Sample("samples/voz-pe.wav"), ".x")
+                .add_subsample(Sample("samples/100bpm/voz-es-1.wav"))
+                .add_subsample(Sample("samples/100bpm/voz-pe-1.wav"), ".x")
                 .build()
                 )
     return ins
@@ -112,6 +119,11 @@ def repi():
                 .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".x..")
                 .build()
                 )
+    cax.add_pattern(".x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".x.")
+                .build()
+                )
     cax.add_pattern("x.x").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"))
@@ -123,6 +135,16 @@ def repi():
                 .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"))
                 .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".x.")
                 .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), "..x")
+                .build()
+                )
+    cax.add_pattern("xxxxxx").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".x....")
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), "..x...")
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), "...x..")
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), "....x.")
+                .add_subsample(Sample("samples/estácio/100bpm/repi-x-1.wav"), ".....x")
                 .build()
                 )
     return cax
@@ -165,6 +187,11 @@ def estacio_caixa():
     cax.add_pattern(".x..").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/caixa-x___-1.wav"), ".x..")
+                .build()
+                )
+    cax.add_pattern(".x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/caixa-x___-1.wav"), ".x.")
                 .build()
                 )
     cax.add_pattern("x.x").add_samples(
@@ -220,6 +247,11 @@ def primeira():
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_1a-1.wav"), ".x..")
                 .build()
                 )
+    ins.add_pattern(".1.").alias(".x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_1a-1.wav"), ".x.")
+                .build()
+                )
     ins.add_pattern("1.1").alias("x.x").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_1a-1.wav"))
@@ -268,6 +300,11 @@ def terceira():
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), ".x..")
                 .build()
                 )
+    ins.add_pattern(".3.").alias(".x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), ".x.")
+                .build()
+                )
     ins.add_pattern("3.3").alias("x.x").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"))
@@ -286,6 +323,14 @@ def terceira():
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"))
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), ".x.")
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), "..x")
+                .build()
+                )
+    ins.add_pattern("xxxx").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"))
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), ".x..")
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), "..x.")
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_3a-1.wav"), "...x")
                 .build()
                 )
     ins.add_pattern(".xx").add_samples(
@@ -322,6 +367,11 @@ def segunda():
     ins.add_pattern(".2..").alias(".x..").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/surdo_2a-1.wav"), ".x..")
+                .build()
+                )
+    ins.add_pattern(".2.").alias(".x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/surdo_2a-1.wav"), ".x.")
                 .build()
                 )
     ins.add_pattern("2.2").alias("x.x").add_samples(
@@ -376,6 +426,11 @@ def tamborim():
                 .add_subsample(Sample("samples/estácio/100bpm/tamborim-x-1.wav"), ".x..")
                 .build()
                 )
+    ins.add_pattern(".x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/tamborim-x-1.wav"), ".x.")
+                .build()
+                )
     ins.add_pattern("x..x").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/tamborim-x-1.wav"))
@@ -424,9 +479,14 @@ def chocalho():
                 .add_subsample(Sample("samples/estácio/100bpm/chocalho-x-1.wav"), ".x")
                 .build()
                 )
-    ins.add_pattern(".x..").alias(".x").add_samples(
+    ins.add_pattern(".x..").add_samples(
             SampleBuilder(100, 48000)
                 .add_subsample(Sample("samples/estácio/100bpm/chocalho-x-1.wav"), ".x..")
+                .build()
+                )
+    ins.add_pattern(".x.").add_samples(
+            SampleBuilder(100, 48000)
+                .add_subsample(Sample("samples/estácio/100bpm/chocalho-x-1.wav"), ".x.")
                 .build()
                 )
     ins.add_pattern("xxx").add_samples(
@@ -548,7 +608,7 @@ def main(args):
     player.add_artist("1a",       staff="Primeira", instrument=primeira()).set_pan(0.6).set_gain(-6)
     player.add_artist("2a",       staff="Segunda",  instrument=segunda()).set_pan(-0.6).set_gain(-6)
     player.add_artist("3a",       staff="Terceira", instrument=terceira()).set_gain(-6)
-    player.add_artist("voz",      staff="Voz",      instrument=voz())
+    player.add_artist("voz",      staff="Voz",      instrument=voz()).set_gain(-10)
     player.add_artist("apito",    staff="Apito",    instrument=apito())
     player.add_artist("click",    staff="Click",    instrument=click())
     player.add_artist("count_in", staff="Count In", instrument=apito())

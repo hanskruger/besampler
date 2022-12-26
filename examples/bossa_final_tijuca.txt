@@ -2,7 +2,9 @@ Bosa Tijuca Final
 =================
 
 --
-         1
+Apito    |x    x    x    x   |
+
+1
 Caixa    |/    /    /    /   |/    /    /    /   |/    /    /    /   |x..x ..x. .x.. x.x.|
 Chocalho |/    /    /    /   |/    /    /    /   |/    /    /    /   |x..x ..x. .x.. x.x.|
 Tamborim |/    /    /    /   |/    /    /    /   |/    /    /    /   |x..x ..x. .x.. x.x.|
@@ -20,7 +22,10 @@ Repi     |x..x ..x. .x.. x.x.|x..x ..x. .x.. x.x.|x... .... .... ....|x... .... 
 Primeira |x..x ..x. .x.. x.x.|x..x ..x. .x.. x.x.|x... .... .... ....|x... .... .... ....|
 Segunda  |x..x ..x. .x.. x.x.|x..x ..x. .x.. x.x.|x... .... .... ....|x... .... .... ....|
 Terceira |x..x ..x. .x.. x.x.|x..x ..x. .x.. x.x.|x... .... .... ....|x... .... .... ....|
-Apito    |-    -    -    -   |-    -    -    -   |.... x.x. x    x   |                   |
+Voz      |-    -    -    -   |-    -    -    -   |.... espe ran. ca..|                   |
+Apito    |-    -    -    -   |-    -    -    -   |.    x.x. x    x   |                   |
+
+
 
 --
 
