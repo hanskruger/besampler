@@ -1,4 +1,4 @@
-
+from tempfile import NamedTemporaryFile
 import unittest
 
 from besampler import Score

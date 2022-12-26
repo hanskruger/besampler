@@ -14,7 +14,7 @@ class TestWavefile(unittest.TestCase):
         snd.export("test_delay.wav")
         # Jsut check, that the expected file has been generated. 
         # You need to listen to the file and check, if the result is ok.
-        self.assertEqual("4cd6803024d3a284", sha256sum("test_delay.wav")[0:16])
+        self.assertEqual("3829c0a423938730", sha256sum("test_delay.wav")[0:16])
 
     def test_pan(self):
         snd = WaveFile.from_file("samples/whistle.wav").to_stereo()
@@ -26,5 +26,5 @@ class TestWavefile(unittest.TestCase):
         snd.export("test_pan_right.wav")
         # Jsut check, that the expected file has been generated. 
         # You need to listen to the file and check, if the result is ok.
-        self.assertEqual("4950314bff1ba471", sha256sum("test_pan_left.wav")[0:16])
-        self.assertEqual("1c6b0c69d5481510", sha256sum("test_pan_right.wav")[0:16])
+        self.assertEqual("883ba4ef90de5e3d", sha256sum("test_pan_left.wav")[0:16])
+        self.assertEqual("49263f3e34fe3e6c", sha256sum("test_pan_right.wav")[0:16])

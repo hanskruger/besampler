@@ -1,0 +1,111 @@
+name:   "Estácio"
+bpm: 100
+instruments:
+    - name: "Apito"
+      patterns:
+        - pattern: "x"
+          samples: [ "whistle.wav" ]
+      auto_cliches: True 
+    - name: "Voz"
+      patterns:
+        - pattern: "1"
+          samples: [ "100bpm/voz-um-1.wav" ]
+        - pattern: "2"
+          samples: [ "100bpm/voz-dois-1.wav" ]
+        - pattern: "3"
+          samples: [ "100bpm/voz-tres-1.wav" ]
+        - pattern: "4"
+          samples: [ "100bpm/voz-quatro-1.wav" ]
+        - pattern: "hey"
+          samples: [ "100bpm/voz-hey-1.wav" ]
+        - pattern: "nana nana na.. na.."
+          samples: [ "100bpm/voz-nana_nana_na_na-1.wav" ]
+        - pattern: "es"
+          samples: [ "100bpm/voz-es-1.wav" ]
+        - pattern: "pe"
+          samples: [ "100bpm/voz-pe-1.wav" ]
+        - pattern: "ran"
+          samples: [ "100bpm/voz-ran-1.wav" ]
+        - pattern: "ca"
+          samples: [ "100bpm/voz-ca-1.wav" ]
+      cliches:
+        - pattern: "espe"
+          reciept: "es:x.;pe:.x"
+      auto_cliches: False
+    - name: "Chocalho"
+      patterns:
+        - pattern: "x"
+          samples: [ "estácio/100bpm/chocalho-x-1.wav" ]
+        - pattern: "/"
+          aliases: [ "xxxx" ]
+          samples: [ "estácio/100bpm/chocalho-xxxx-*.wav" ]
+        - pattern: "|/ / / /"
+          aliases: [ "|xxxx xxxx xxxx xxxx" ]
+          samples: [ "estácio/100bpm/chocalho-groove-*.wav" ]
+      auto_cliches: True 
+
+    - name: "Caixa"
+      patterns:
+        - pattern: "|XxLx"
+          aliases: [ "|xxxx", "|/" ]
+          samples: [ "estácio/100bpm/caixa-xxlx-1.wav", "estácio/100bpm/caixa-xxlx-2.wav" ]
+        - pattern: "|/ / / /"
+          aliases: [ "|Xxlx Xlxl Xlxl Xlxlx" ]
+          samples: [ "estácio/100bpm/caixa-groove-1.wav" ]
+        - pattern: "/"
+          aliases: [ "xxxx", "Xlxl" ]
+          samples: [ "estácio/100bpm/caixa-xxxx-*.wav" ]
+        - pattern: "x"
+          samples: [ "estácio/100bpm/caixa-x___-*.wav" ]
+      auto_cliches: True 
+    - name: "Repi"
+      patterns:
+        - pattern: "cccc cccc"
+          samples: [ "estácio/100bpm/repi-chamada-*.wav" ]
+        - pattern: "x"
+          samples: [ "estácio/100bpm/repi-x-*.wav" ]
+        - pattern: "/"
+          aliases: ["xxxx"]
+          samples: [ "estácio/100bpm/repi-xxxx-*.wav" ]
+      auto_cliches: True 
+    - name: "Primeira"
+      patterns:
+        - pattern: "x"
+          aliases: ["1"]
+          samples: [ "estácio/100bpm/surdo_1a-*.wav" ]
+      cliches:
+        - pattern: "xxxx"
+          reciept: "x:x;x:.x..;x:..x.;x:...x"
+      auto_cliches: True 
+    - name: "Segunda"
+      patterns:
+        - pattern: "x"
+          aliases: ["2"]
+          samples: [ "estácio/100bpm/surdo_2a-*.wav" ]
+      cliches:
+        - pattern: "xxxx"
+          reciept: "x:x;x:.x..;x:..x.;x:...x"
+      auto_cliches: True 
+    - name: "Terceira"
+      patterns:
+        - pattern: "x"
+          aliases: ["3"]
+          samples: [ "estácio/100bpm/surdo_3a-*.wav" ]
+      cliches:
+        - pattern: "xxxx"
+          reciept: "x:x;x:.x..;x:..x.;x:...x"
+      auto_cliches: True 
+
+    - name: "Tamborim"
+      patterns:
+        - pattern: "x"
+          samples: [ "estácio/100bpm/tamborim-x-*.wav" ]
+        - pattern: "|xxx xxx xxx xxx x... .... .... ...." 
+          samples: [ "estácio/100bpm/tamborim-subida-*.wav" ]
+        - pattern: "/"
+          aliases: [ "xxxx" ]
+          samples: [ "estácio/100bpm/tamborim-single_groove-*.wav" ]
+        - pattern: "xxx"
+          samples: [ "estácio/100bpm/tamborim-xxx-*.wav" ]
+      auto_cliches: True 
+

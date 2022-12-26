@@ -107,11 +107,12 @@ def parse_pattern(pattern):
     return RetVal(beats, on_beat_1)
 
 class Pattern():
-    def __init__(self, pattern):
+    def __init__(self, pattern, cliche = False):
         self._pattern = pattern
         self._pattern, self._on_beat_1  = parse_pattern(pattern)
         self._samples = []
         self._aliases = []
+        self._cliche  = cliche
 
     def add_samples(self, *samples):
         self._samples.extend(samples)
@@ -128,12 +129,32 @@ class Pattern():
         for alias in self._aliases:
             if match_pattern(alias, staff_line, idx, head_index,time_signature, self._on_beat_1):
                 return True
-        return False 
-    
+        return False
+
     def alias(self, *patterns):
         for pattern in patterns:
             self._aliases.append( parse_pattern(pattern).pattern )
         return self
+    
+    @property
+    def pattern(self):
+        return self._pattern
+    @property
+    def on_beat_1(self):
+        return self._on_beat_1
+
+    @property
+    def score(self):
+        '''
+        Returns the score of this pattern. The lower the score, the better it is. 
+        '''
+        #returns a negative number so we don't need to reverse sort function. Taht way, higher score will be ordered first.
+        #So the biggest the number the best.
+        return -len(self)
+
+    @property
+    def cliche(self):
+        return self._cliche
 
     def __len__(self):
         '''
@@ -145,7 +166,7 @@ class Pattern():
         return len(self._pattern)
 
     def __str__(self):
-        return self._pattern
+        return str(" ".join(self._pattern))
 
     def __repr__(self):
         return f"<Pattern {self} at 0x{id(self):x}>"
@@ -155,4 +176,8 @@ class Pattern():
 
     def sample(self, repeat_index = 0):
         return self._samples[ repeat_index % len(self._samples) ]
+    
+    @property
+    def samples(self):
+        return list( self._samples )
 
