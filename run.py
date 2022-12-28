@@ -32,6 +32,7 @@ parser.add_argument('--info', action='store_true', help="print score info and ex
 parser.add_argument('--tracks', action='store_true')
 parser.add_argument('--bpm', default=100, type=int, help="The output speed")
 parser.add_argument('-f', '--format', default="mp3", help='format of output (wav|mp3)')  # on/off flag
+parser.add_argument('--ensamble', help='Specify, which ensamble to use.')  # on/off flag
 
 parser.add_argument('--mute', help='Mute the given aritsts.')  # on/off flag
 #parser.add_argument('--mute_staff', help='Mute all artists of the given staff.')  # on/off flag
@@ -53,7 +54,7 @@ def click():
             Sample("samples/click-soft.wav"))
     return ins
 
-def print_info(args, score, player):
+def print_info(args, score, player, bateria, ensamble):
     MSG= f"""# Info about score and player
 score.filename:       {args.score}
 score.time.signature: {score.time_signature.pulses}/{score.time_signature.note_value}
@@ -61,6 +62,8 @@ score.staffs:         {", ".join(map(str, score.staffs))}
 player.bpm:           {player.bpm}
 player.instruments:   {", ".join(map(str, player.instruments))}
 player.artists:       {", ".join(map(lambda x: x.name, player.artists))}
+bateria.ensambles:    {", ".join(map(lambda x: x.name, bateria.ensambles))}
+ensamble.name:        {ensamble.name}
 """
     print(MSG)
 
@@ -77,18 +80,31 @@ def main(args):
 
     bateria = Bateria.from_file(args.bateria)
 
-    player = Player(bpm = 100)
-    
-    player.add_artist("cho1",     staff="Chocalho", instrument=bateria.instrument("Chocalho")).set_pan(0.2).set_gain(-6)
-    player.add_artist("tam1",     staff="Tamborim", instrument=bateria.instrument("Tamborim")).set_pan(0.3)
-    player.add_artist("cax1",     staff="Caixa",    instrument=bateria.instrument("Caixa")).set_pan(-0.1).set_gain(1.0)
-    player.add_artist("rep1",     staff="Repi",     instrument=bateria.instrument("Repi"))
-    player.add_artist("1a",       staff="Primeira", instrument=bateria.instrument("Primeira")).set_pan(0.6).set_gain(-6)
-    player.add_artist("2a",       staff="Segunda",  instrument=bateria.instrument("Segunda")).set_pan(-0.6).set_gain(-6)
-    player.add_artist("3a",       staff="Terceira", instrument=bateria.instrument("Terceira")).set_gain(-6)
-    player.add_artist("apito",    staff="Apito",    instrument=bateria.instrument("Apito"))
-    player.add_artist("voz",      staff="Voz",      instrument=bateria.instrument("Voz"))
-    player.add_artist("count_in", staff="Count In", instrument=bateria.instrument("Apito"))
+    if (bateria.bpm > args.bpm):
+        raise RuntimeError(f"Requested speed {args.bpm} is bellow bateria speed ({bateria.bpm}), which is not support.")
+
+    player = Player(bpm = bateria.bpm)
+   
+
+    # load ensamble
+    ensamble = next(iter(bateria.ensambles))
+        
+    for artist in ensamble.artists:
+        player.add_artist(artist.name, staff=artist.staff_name, instrument=bateria.instrument( artist.instrument_name)).set_pan( artist.pan).set_gain(artist.gain)
+
+#    player.add_artist("cho1",     staff="Chocalho", instrument=bateria.instrument("Chocalho")).set_pan(0.2).set_gain(-6)
+#    player.add_artist("tam1",     staff="Tamborim", instrument=bateria.instrument("Tamborim")).set_pan(0.3)
+#    player.add_artist("cax1",     staff="Caixa",    instrument=bateria.instrument("Caixa")).set_pan(-0.1).set_gain(1.0)
+#    player.add_artist("rep1",     staff="Repi",     instrument=bateria.instrument("Repi"))
+#    player.add_artist("1a",       staff="Primeira", instrument=bateria.instrument("Primeira")).set_pan(0.6).set_gain(-6)
+#    player.add_artist("2a",       staff="Segunda",  instrument=bateria.instrument("Segunda")).set_pan(-0.6).set_gain(-6)
+#    player.add_artist("3a",       staff="Terceira", instrument=bateria.instrument("Terceira")).set_gain(-6)
+#    player.add_artist("apito",    staff="Apito",    instrument=bateria.instrument("Apito"))
+#    player.add_artist("voz",      staff="Voz",      instrument=bateria.instrument("Voz"))
+#    player.add_artist("count_in", staff="Count In", instrument=bateria.instrument("Apito"))
+   
+#    player.add_artist("rebolo", staff="Rebolo", instrument=bateria.instrument("Rebolo"))
+
 
     #player.add_artist("cho1",     staff="Chocalho", instrument=chocalho()).set_pan(0.2).set_gain(-6)
     #player.add_artist("tam1",     staff="Tamborim", instrument=tamborim()).set_pan(0.3)
@@ -98,7 +114,6 @@ def main(args):
     #player.add_artist("voz",      staff="Voz",      instrument=voz()).set_gain(-10)
     player.add_artist("click",    staff="Click",    instrument=click())
 
-
     muted_artists = []
 
     if (args.mute):
@@ -107,8 +122,6 @@ def main(args):
         solo_artits = set(map(lambda x: x.strip(),args.solo.split(",")))
         all_artists = set(map(lambda x: x.name, player.artists))
         muted_artists = list(all_artists - solo_artits) 
-
-
 
     if muted_artists:
         for a in player.artists:
@@ -122,7 +135,7 @@ def main(args):
     score = Score.from_file(args.score)
 
     if (args.info):
-        print_info(args, score, player)
+        print_info(args, score, player, bateria, ensamble)
         sys.exit()
 
     if (args.loop):
@@ -132,12 +145,12 @@ def main(args):
         score.add_count_in()
     if(args.click):
         score.add_click()
-    #score = bossa()
+    
     snd = player.synthesize(score)
 
-    snd.speedup( args.bpm / player.bpm)
-    #x = snd._audio_data.speedup(1.35, 150, 25)
-    #x.export(args.out, format="wav")
+    if (args.bpm > player.bpm):
+        snd.speedup( args.bpm / player.bpm)
+    
     if (args.out):
         snd.export(args.out, format=args.format)
     else:

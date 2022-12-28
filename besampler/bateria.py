@@ -1,3 +1,4 @@
+from collections import namedtuple
 import yaml
 import logging
 import logging
@@ -15,12 +16,23 @@ from .pattern import parse_pattern
 def _required(dic, key, type=str):
     return type(dic[key])
 
+Artist   = namedtuple("Artist",  ["name", "staff_name", "instrument_name", "pan", "gain", "delay_ms" ])
+Ensamble = namedtuple("Ensamble",["name", "artists" ])
+
 class Bateria():
     def __init__(self, name, bpm):
         self._name = name
         self._instruments = {}
         self._bpm = int(bpm)
         self._base_dir = None
+        self._ensables = {}
+
+    @property
+    def ensambles(self):
+        return list(self._ensables.values())
+
+    def ensamble(self, name):
+        return self._instruments[name]
 
     @property
     def instruments(self):
@@ -180,6 +192,27 @@ class Bateria():
             instrument = self._parse_instrument(cfg, instrument_cfg)
             self.add_instrument(instrument)
 
+    def _parse_ensamble(self, cfg, ensamble_cfg):
+        ensamble = Ensamble(ensamble_cfg["name"], [])
+        for artist in ensamble_cfg["artists"]:
+            # TODO: Check the instrument does really exists!
+            ensamble.artists.append(Artist(
+                name = artist["name"],
+                staff_name = artist["staff"],
+                instrument_name = artist["instrument"],
+                pan  = artist.get("pan", 0.0),
+                gain = artist.get("gain", 0.0),
+                delay_ms = artist.get("delay", 0.0)))
+        return ensamble
+
+
+    def _parse_ensambles(self, cfg):
+        for ensamble_cfg in cfg.get("ensambles", []):
+            ensamble = self._parse_ensamble(cfg, ensamble_cfg)
+            logging.debug(f"Adding Ensable \"{ensamble.name}\".")
+            self._ensables[ ensamble.name ] = ensamble
+
     def _parse_config(self, cfg):
         self._parse_instruments(cfg)
+        self._parse_ensambles(cfg)
 

@@ -109,4 +109,48 @@ instruments:
         - pattern: "xxx"
           samples: [ "estácio/100bpm/tamborim-xxx-*.wav" ]
       auto_cliches: True 
-
+ensambles:
+    - name: "Simple"
+      artists: 
+        - name: "cax1"
+          staff: "Caixa"
+          instrument: "Caixa"
+          pan: -0.1
+          gain: 1
+          delay: 0
+        - name: "tam1"
+          staff: "Tamborim"
+          instrument: "Tamborim"
+          pan: 0.3
+        - name: "cho1"
+          staff: "Chocalho"
+          instrument: "Chocalho"
+          pan: 0.2
+          gain: -6.0
+        - name: "repi1"
+          staff: "Repi"
+          instrument: "Repi"
+        - name: "1a"
+          staff: "Primeira"
+          instrument: "Primeira"
+          pan: 0.6
+          gain: -6.0
+        - name: "2a"
+          staff: "Segunda"
+          instrument: "Segunda"
+          pan: -0.6
+          gain: -6.0
+        - name: "3a"
+          staff: "Terceira"
+          instrument: "Terceira"
+          gain: -6.0
+        - name: "apito"
+          staff: "Apito"
+          instrument: "Apito"
+        - name: "voz"
+          staff: "Voz"
+          instrument: "Voz"
+        - name: "count_in"
+          staff: "Coount In"
+          instrument: "Apito"
+    
