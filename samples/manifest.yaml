@@ -17,6 +17,7 @@ instruments:
         - pattern: "4"
           samples: [ "100bpm/voz-quatro-1.wav" ]
         - pattern: "hey"
+          aliases: [ "hey."]
           samples: [ "100bpm/voz-hey-1.wav" ]
         - pattern: "nana nana na.. na.."
           samples: [ "100bpm/voz-nana_nana_na_na-1.wav" ]
