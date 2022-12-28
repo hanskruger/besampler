@@ -4,6 +4,7 @@ import numpy as np
 import datetime
 import re, os
 import wave
+import random
 from pydub import AudioSegment
 from pathlib import Path
 from functools import total_ordering
@@ -107,12 +108,13 @@ def parse_pattern(pattern):
     return RetVal(beats, on_beat_1)
 
 class Pattern():
-    def __init__(self, pattern, cliche = False):
+    def __init__(self, pattern, cliche = False, random = False):
         self._pattern = pattern
         self._pattern, self._on_beat_1  = parse_pattern(pattern)
         self._samples = []
         self._aliases = []
         self._cliche  = cliche
+        self._random = random
 
     def add_samples(self, *samples):
         self._samples.extend(samples)
@@ -135,7 +137,13 @@ class Pattern():
         for pattern in patterns:
             self._aliases.append( parse_pattern(pattern).pattern )
         return self
-    
+   
+    def random(self, *value):
+        if (len(value)):
+            self._random = True if value[0] else False
+            return self
+        return self._random
+
     @property
     def pattern(self):
         return self._pattern
@@ -175,6 +183,8 @@ class Pattern():
         return self.sample(repeat_index).apply(self, idx, programm, score, staff, staffline, artist, repeat_index )
 
     def sample(self, repeat_index = 0):
+        if self._random:
+            return random.choice(self._samples)
         return self._samples[ repeat_index % len(self._samples) ]
     
     @property

@@ -26,12 +26,12 @@ Segunda  |.... .... x... x...|.... ....   .... ....|x    x    x    x   |x... xxx
 Terceira |.... .... .... ....|.... xxxx   x... ....|x    x    x    x   |x... xxx  xxx  x...|
 
          20
-Tamborim |x... ..x. x.x. x.x.|x... xxxx  x... ....|x... ..x. x.x. x.x.|x... xxxx  x... ....|
-Chocalho |x... ..x. x.x. x.x.|x... xxxx  x... ....|x... ..x. x.x. x.x.|x... xxxx  x... ....|
+Tamborim |x... ..x. x.x. x.x.|x... xxxx x... ....|x... ..x. x.x. x.x.|x... xxxx x... ....|
+Chocalho |x... ..x. x.x. x.x.|x... xxxx x... ....|x... ..x. x.x. x.x.|x... xxxx x... ....|
 
          25
-Tamborim |x... ..x. x.x. x.x.|x... xxxx x... ....|x... x... x... x...|x... xxxx x... ....| 
-Chocalho |x... ..x. x.x. x.x.|x... xxxx x... ....|x... x... x... x...|x... xxxx x... ....| 
+Tamborim |x... ..x. x.x. x.x.|x... xxxx x... ....|x... x... x... x...|x... xxx  x... ....| 
+Chocalho |x... ..x. x.x. x.x.|x... xxxx x... ....|x... x... x... x...|x... xxx  x... ....| 
 Voz      |.... .... .... ....|.... .... .... ....|.... .... .... ....|.... .... .... hey.|
 
          30
