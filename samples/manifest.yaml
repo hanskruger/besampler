@@ -65,9 +65,30 @@ instruments:
           samples: [ "estácio/100bpm/repi-chamada-*.wav" ]
         - pattern: "x"
           samples: [ "estácio/100bpm/repi-x-*.wav" ]
+        - pattern: "s"
+          samples: [ "100bpm/repi-slap-*.wav" ]
+        - pattern: "h"
+          samples: [ "100bpm/repi-h-*.wav" ]
+        - pattern: "z"
+          samples: [ "100bpm/repi-zz-*.wav" ]
+        - pattern: "o"
+          samples: [ "100bpm/repi-open-*.wav" ]
         - pattern: "/"
           aliases: ["xxxx"]
           samples: [ "estácio/100bpm/repi-xxxx-*.wav" ]
+      cliches:
+        - pattern: "zz.s"
+          reciept: "z:x;s:...x"
+        - pattern: "hoh"
+          reciept: "h:x..;o:.x.;h:..x"
+        - pattern: "xoh"
+          reciept: "x:x..;o:.x.;h:..x"
+        - pattern: "..zz"
+          reciept: "z:.x"
+        - pattern: ".s.."
+          reciept: "s:.x.."
+        - pattern: "xohs"
+          reciept: "x:x;o:.x..;h:..x.;s:...x"
       auto_cliches: True 
     - name: "Primeira"
       patterns:
@@ -151,6 +172,6 @@ ensambles:
           staff: "Voz"
           instrument: "Voz"
         - name: "count_in"
-          staff: "Coount In"
+          staff: "Count In"
           instrument: "Apito"
     

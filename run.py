@@ -101,7 +101,6 @@ def main(args):
 #    player.add_artist("3a",       staff="Terceira", instrument=bateria.instrument("Terceira")).set_gain(-6)
 #    player.add_artist("apito",    staff="Apito",    instrument=bateria.instrument("Apito"))
 #    player.add_artist("voz",      staff="Voz",      instrument=bateria.instrument("Voz"))
-#    player.add_artist("count_in", staff="Count In", instrument=bateria.instrument("Apito"))
    
 #    player.add_artist("rebolo", staff="Rebolo", instrument=bateria.instrument("Rebolo"))
 
@@ -112,7 +111,12 @@ def main(args):
     #player.add_artist("2a",       staff="Segunda",  instrument=segunda()).set_pan(-0.6).set_gain(-6)
     #player.add_artist("3a",       staff="Terceira", instrument=terceira()).set_gain(-6)
     #player.add_artist("voz",      staff="Voz",      instrument=voz()).set_gain(-10)
-    player.add_artist("click",    staff="Click",    instrument=click())
+    #player.add_artist("click",    staff="Click",    instrument=click())
+
+    if ("Count In" not in map(lambda x:x.staff_name, ensamble.artists)):
+        player.add_artist("count_in", staff="Count In", instrument=click())
+    if ("Click" not in map(lambda x:x.staff_name, ensamble.artists)):
+        player.add_artist("click",    staff="Click",    instrument=click())
 
     muted_artists = []
 

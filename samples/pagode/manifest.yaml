@@ -1,0 +1,27 @@
+name:   "Estácio"
+bpm: 60
+instruments:
+    - name: "Rebolo"
+      patterns:
+        - pattern: "X"
+          samples: [ "rebolo-x-*.wav" ]
+        - pattern: "x"
+          samples: [ "rebolo-x___-*.wav" ]
+        - pattern: "t"
+          samples: [ "rebolo-can-*.wav" ]
+        - pattern: "o"
+          samples: [ "rebolo-open-*.wav" ]
+        - pattern: "s"
+          samples: [ "rebolo-slap-*.wav" ]
+      cliches:
+        - pattern: "xttx"
+          reciept: "x:x;t:.x..;t:..x.;x:...x"
+        - pattern: "stto"
+          reciept: "s:x;t:.x..;t:..x.;o:...x"
+      auto_cliches: False
+ensambles:
+    - name: "Simples"
+      artists:
+          - name: "Rebolo"
+            staff: "Rebolo"
+            instrument: "Rebolo"
