@@ -58,6 +58,15 @@ instruments:
           samples: [ "estácio/100bpm/caixa-xxxx-*.wav" ]
         - pattern: "x"
           samples: [ "estácio/100bpm/caixa-x___-*.wav" ]
+        - pattern: "z"
+          samples: [ "estácio/100bpm/caixa-z-*.wav" ]
+        - pattern: "l"
+          samples: [ "estácio/100bpm/caixa-l-*.wav" ]
+      cliches:
+        - pattern: "xzl"
+          reciept: "x:x;z:.x.;l:..x"
+        - pattern: "xz.l"
+          reciept: "x:x;z:.x..;l:...x"
       auto_cliches: True 
     - name: "Repi"
       patterns:
@@ -69,6 +78,10 @@ instruments:
           samples: [ "100bpm/repi-slap-*.wav" ]
         - pattern: "h"
           samples: [ "100bpm/repi-h-*.wav" ]
+        - pattern: "l"
+          samples: [ "100bpm/repi-l-*.wav" ]
+        - pattern: "f"
+          samples: [ "100bpm/repi-hs-*.wav" ]
         - pattern: "z"
           samples: [ "100bpm/repi-zz-*.wav" ]
         - pattern: "o"
@@ -89,6 +102,24 @@ instruments:
           reciept: "s:.x.."
         - pattern: "xohs"
           reciept: "x:x;o:.x..;h:..x.;s:...x"
+        - pattern: "h.h."
+          reciept: "h:x...;h:..x."
+        - pattern: "x.h."
+          reciept: "x:x...;h:..x."
+        - pattern: "h.x."
+          reciept: "h:x...;x:..x."
+        - pattern: "xhh"
+          reciept: "x:x..;h:.x.;h:..x"
+        - pattern: "xhx"
+          reciept: "x:x..;h:.x.;x:..x"
+        - pattern: "hhx"
+          reciept: "h:x..;h:.x.;x:..x"
+        - pattern: "hxh"
+          reciept: "h:x..;x:.x.;h:..x"
+        - pattern: "fff"
+          reciept: "f:x..;f:.x.;f:..x"
+        - pattern: "hhh"
+          reciept: "h:x..;h:.x.;h:..x"
       auto_cliches: True 
     - name: "Primeira"
       patterns:
