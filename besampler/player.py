@@ -15,7 +15,7 @@ from .pattern  import match_pause, match_repeat, parse_tone
 from .utils    import Clock
 
 Prog      = namedtuple("Prog",["programm", ])
-ProgEntry = namedtuple("ProgEntry",["sample", "repeat_index", "staff_index"])
+ProgEntry = namedtuple("ProgEntry",["sample", "repeat_index", "staff_index", "pattern"])
 
 class InstrumentSettings():
     def __init__(self, pan = 0, delay_ms = 0, gain_dbfs = 0.0):
@@ -54,6 +54,7 @@ class Player():
         self._click  = None  
         self._out_dir = Path(".")
         self._track_cb = lambda snd,artist,score : True
+        self._prog_cb  = lambda prog,artist,score : True
 
     @property
     def bpm(self):
@@ -67,6 +68,14 @@ class Player():
         The callback must accept 3 argument: the sound-file, the artist and the score
         '''
         self._track_cb = cb
+    
+    def add_prog_callback(self, cb):
+        '''
+        Provide a callback that will be called once an inidvidual programm a given artist has been compiled. 
+
+        The callback must accept 3 argument: the programm, the artist and the score
+        '''
+        self._prog_cb = cb
 
     def __synth_measure(self, m):
         pass
@@ -132,7 +141,8 @@ class Player():
             pat = patterns[0]
             repeat_index = 0 if (not prog or last_pattern != pat) else prog[-1].repeat_index + 1
             last_pattern = pat
-            consumed = pat.apply(idx, prog, score, staff, staff_line, artist, repeat_index  )
+            # apply pattern to programm!
+            consumed = pat.apply(idx, prog, score, staff, staff_line, artist, repeat_index )
             idx = idx + consumed
 
         # start synthesizing the sound file.
@@ -173,6 +183,9 @@ class Player():
 
         # pass 2: Check for instrumetns for all staff lines
         for s in staffs:
+            if staff and staff != s.name:
+                continue
+
             if s.name not in self._artist.keys():
                 logging.warning(f"No artist given for staff {s}.")
                 continue
@@ -183,6 +196,7 @@ class Player():
 
                 # pass 3: For each staff line and isntrument, generate the wave file
                 prog = self._compile_artist(i, s, score)
+                self._prog_cb(prog, i, score)
                 snd = self._synth_artist(prog, i, score)
                 self._track_cb(snd, i, score)
                 #print(prog.programm)

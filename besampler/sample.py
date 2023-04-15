@@ -16,17 +16,19 @@ class Sample():
         '''
         Represents a piec of music, taht will be used to create the fdinal file
 
-        offset_ms Offset in ms. A posstive offset, will cause the sample to be played earlier!
+        offset_ms Offset in ms. A posstive offset, will cause the sample to be played earlier! Use it to tell the beat posiiton in sample.
         '''
         self._sample_rate           = 0
         self._number_samples        = 0
         self._offset_ms = offset_ms = 0
         self._wave = None
+        self._file_name = "<data>"
         if (isinstance(file_name, WaveFile)):
             self._wave           = file_name
             self._sample_rate    = file_name.frame_rate
             self._number_samples = file_name.number_of_samples 
         else:
+            self._file_name = file_name
             self._wave = WaveFile.from_file(file_name)
             with wave.open(file_name,"rb") as f:
                 self._sample_rate    = f.getframerate()
@@ -51,7 +53,10 @@ class Sample():
     @property
     def wave(self):
         return self._wave
-    
-    def apply(self, pattern, idx, programm, score, staff, staffline, artist, repeat_index  ):
-        programm.append( ProgEntry( self, repeat_index, idx) )
+
+    def apply(self, pattern, idx, programm, score, staff, staffline, artist, repeat_index ):
+        programm.append( ProgEntry( self, repeat_index, idx, pattern) )
         return len(pattern)
+    
+    def __repr__(self):
+        return f"<Sample {self.file_name} at 0x{id(self):x}>"

@@ -31,6 +31,6 @@ class SampleBuilder(object):
 
         return Sample(wav, offset_ms = max_offset)
     
-    def apply(self, pattern, idx, programm, score, staff, staffline, artist, repeat_index  ):
-        programm.append( ProgEntry( self.sample(repeat_index), repeat_index, idx) )
+    def apply(self, pattern, idx, programm, score, staff, staffline, artist, repeat_index):
+        programm.append( ProgEntry( self.sample(repeat_index), repeat_index, idx, pattern) )
         return len(pattern)

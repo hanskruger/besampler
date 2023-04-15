@@ -73,11 +73,16 @@ class Bateria():
             if "*" in sample:
                 for name in glob.glob( str(self._base_dir / sample)):
                     logging.debug(f"Adding sample '{name}' to pattern {pattern}")
-                    pattern.add_samples(Sample( name))
+                    pattern.add_samples(Sample( name, bpm = self.bpm))
                 pass
             else:
+                args = {}
+                if ";" in sample:
+                    sample, args = sample.split(";",1)[0], dict(map( lambda x: (x.split("=", 1)[0], x.split("=", 1)[1]),sample.split(";")[1:])) 
                 logging.debug(f"Adding sample {sample} to pattern {pattern} for instrument {instrument.name}.")
-                pattern.add_samples(Sample( str( self._base_dir / sample)))
+                offset = int(args.get("offset", 0)) 
+                bpm    = int(args.get("bpm", self.bpm)) 
+                pattern.add_samples(Sample( str( self._base_dir / sample), bpm = bpm, offset_ms=offset ))
 
         if (not len(pattern.samples)):
             raise RuntimeError(f"No samples found for pattern \"{pattern}\" and instrument {instrument}.")

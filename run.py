@@ -26,11 +26,12 @@ parser.add_argument('score', type=Path, help="The score to be sampled")         
 parser.add_argument('-o', '--out',   type=Path, help="name of the output file")           # positional argument
 parser.add_argument('-v', '--verbose', action='store_true')  # on/off flag
 parser.add_argument('-D', '--debug', action='store_true')  # on/off flag
+parser.add_argument('-P', '--debug_programm', default=None, help="Print the programm for a given artist and exit.")  # on/off flag
 parser.add_argument('--count_in', action='store_true')  # on/off flag
 parser.add_argument('--click', action='store_true')  # on/off flag
 parser.add_argument('--info', action='store_true', help="print score info and exit")
 parser.add_argument('--tracks', action='store_true')
-parser.add_argument('--bpm', default=100, type=int, help="The output speed")
+parser.add_argument('--bpm', default=None, type=int, help="The output speed")
 parser.add_argument('-f', '--format', default="mp3", help='format of output (wav|mp3)')  # on/off flag
 parser.add_argument('--ensamble', help='Specify, which ensamble to use.')  # on/off flag
 
@@ -80,38 +81,20 @@ def main(args):
 
     bateria = Bateria.from_file(args.bateria)
 
+    if not args.bpm:
+        args.bpm = bateria.bpm
+
     if (bateria.bpm > args.bpm):
         raise RuntimeError(f"Requested speed {args.bpm} is bellow bateria speed ({bateria.bpm}), which is not support.")
+    
 
     player = Player(bpm = bateria.bpm)
-   
 
     # load ensamble
     ensamble = next(iter(bateria.ensambles))
         
     for artist in ensamble.artists:
         player.add_artist(artist.name, staff=artist.staff_name, instrument=bateria.instrument( artist.instrument_name)).set_pan( artist.pan).set_gain(artist.gain)
-
-#    player.add_artist("cho1",     staff="Chocalho", instrument=bateria.instrument("Chocalho")).set_pan(0.2).set_gain(-6)
-#    player.add_artist("tam1",     staff="Tamborim", instrument=bateria.instrument("Tamborim")).set_pan(0.3)
-#    player.add_artist("cax1",     staff="Caixa",    instrument=bateria.instrument("Caixa")).set_pan(-0.1).set_gain(1.0)
-#    player.add_artist("rep1",     staff="Repi",     instrument=bateria.instrument("Repi"))
-#    player.add_artist("1a",       staff="Primeira", instrument=bateria.instrument("Primeira")).set_pan(0.6).set_gain(-6)
-#    player.add_artist("2a",       staff="Segunda",  instrument=bateria.instrument("Segunda")).set_pan(-0.6).set_gain(-6)
-#    player.add_artist("3a",       staff="Terceira", instrument=bateria.instrument("Terceira")).set_gain(-6)
-#    player.add_artist("apito",    staff="Apito",    instrument=bateria.instrument("Apito"))
-#    player.add_artist("voz",      staff="Voz",      instrument=bateria.instrument("Voz"))
-   
-#    player.add_artist("rebolo", staff="Rebolo", instrument=bateria.instrument("Rebolo"))
-
-
-    #player.add_artist("cho1",     staff="Chocalho", instrument=chocalho()).set_pan(0.2).set_gain(-6)
-    #player.add_artist("tam1",     staff="Tamborim", instrument=tamborim()).set_pan(0.3)
-    #player.add_artist("1a",       staff="Primeira", instrument=primeira()).set_pan(0.6).set_gain(-6)
-    #player.add_artist("2a",       staff="Segunda",  instrument=segunda()).set_pan(-0.6).set_gain(-6)
-    #player.add_artist("3a",       staff="Terceira", instrument=terceira()).set_gain(-6)
-    #player.add_artist("voz",      staff="Voz",      instrument=voz()).set_gain(-10)
-    #player.add_artist("click",    staff="Click",    instrument=click())
 
     if ("Count In" not in map(lambda x:x.staff_name, ensamble.artists)):
         player.add_artist("count_in", staff="Count In", instrument=click())
@@ -150,6 +133,17 @@ def main(args):
     if(args.click):
         score.add_click()
     
+    if(args.debug_programm):
+        def print_programm(prog, artist, score):
+            print(artist)
+            for e in prog[0]:
+                print(e)
+            pass
+        player.add_prog_callback(print_programm)
+        player.synthesize(score, staff= args.debug_programm)
+        return True
+
+
     snd = player.synthesize(score)
 
     if (args.bpm > player.bpm):
