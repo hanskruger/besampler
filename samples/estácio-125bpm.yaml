@@ -1,0 +1,134 @@
+name:   "Estácio"
+bpm: 125
+instruments:
+    - name: "Apito"
+      patterns:
+        - pattern: "x"
+          samples: [ "whistle.wav" ]
+      auto_cliches: True 
+
+    - name: "Chocalho"
+      patterns:
+        - pattern: "x"
+          samples: [ "125bpm/chocalho_x-*.wav" ]
+        - pattern: "/"
+          aliases: [ "xxxx" ]
+          samples: [ "125bpm/chocalho_xxxx-0.wav;offset=17", "125bpm/chocalho_xxxx-1.wav;offset=15", "125bpm/chocalho_xxxx-2.wav;offset=16", "125bpm/chocalho_xxxx-3.wav;offset=10", "125bpm/chocalho_xxxx-4.wav;offset=15", "125bpm/chocalho_xxxx-5.wav;offset=15" ]
+        - pattern: "|xxxx x.x. x..."
+          samples: [ "125bpm/chocalho-virada-*.wav" ]
+      auto_cliches: True 
+
+    - name: "Caixa"
+      patterns:     
+        - pattern: "|/ / / /"
+          aliases: [ "|Xxlx Xlxl Xlxl Xlxlx" ]
+          samples: [ "125bpm/caixa-groove-*.wav" ]
+        - pattern: "|xxlx x.x. x..."
+          aliases: [ "|XxLx x.x. x..." ]
+          samples: [ "125bpm/caixa-virada-*.wav" ]
+        - pattern: "|/"
+          aliases: ["Xxlx", "xxlx" ]
+          samples: [ "125bpm/caixa-xxlx-*.wav" ]
+        - pattern: "/"
+          aliases: ["xxxx", "xlxl" ]
+          samples: [ "125bpm/caixa_xxxx-0.wav;offset=9", "125bpm/caixa_xxxx-1.wav;offset=15", "125bpm/caixa_xxxx-2.wav;offset=15", "125bpm/caixa_xxxx-3.wav;offset=15", "125bpm/caixa_xxxx-4.wav;offset=15", "125bpm/caixa_xxxx-5.wav;offset=15" ]
+        - pattern: "x"
+          samples: [ "125bpm/caixa-x-*.wav" ]
+      auto_cliches: True 
+
+    - name: "Primeira"
+      patterns:
+        - pattern: "x"
+          aliases: ["1"]
+          samples: [ "125bpm/surdo_1a-*.wav" ]
+      cliches:
+        - pattern: "xxxx"
+          reciept: "x:x;x:.x..;x:..x.;x:...x"
+      auto_cliches: True 
+    - name: "Segunda"
+      patterns:
+        - pattern: "x"
+          aliases: ["2"]
+          samples: [ "125bpm/surdo_2a-*.wav" ]
+      cliches:
+        - pattern: "xxxx"
+          reciept: "x:x;x:.x..;x:..x.;x:...x"
+      auto_cliches: True 
+    - name: "Terceira"
+      patterns:
+        - pattern: "x"
+          aliases: ["3"]
+          samples: [ "125bpm/surdo_3a-*.wav" ]
+      cliches:
+        - pattern: "xxxx"
+          reciept: "x:x;x:.x..;x:..x.;x:...x"
+      auto_cliches: True 
+    - name: "Tamborim"
+      patterns:     
+        - pattern: "|/ / / /"
+          samples: [ "125bpm/tamborim-groove-*.wav" ]
+          random: True
+        - pattern: "|xxxx x.x. x... ...."
+          samples: [ "125bpm/tamborim-virada-*.wav" ]
+          random: True
+        - pattern: "/"
+          aliases: [ "xxxx" ]
+          samples: [ "125bpm/tamborim-xxxx-*.wav" ]
+          random: True
+        - pattern: "xxx"
+          samples: [ "125bpm/tamborim-xxx-*.wav" ]
+          random: True
+        - pattern: "x"
+          samples: [ "125bpm/tamborim-x-*.wav" ]
+          random: True
+      auto_cliches: True 
+
+    - name: "Repi"
+    - name: "Voz"
+
+
+ensambles:
+    - name: "Simple"
+      artists: 
+        - name: "cax1"
+          staff: "Caixa"
+          instrument: "Caixa"
+          pan: -0.1
+          gain: 1
+          delay: 0
+        - name: "tam1"
+          staff: "Tamborim"
+          instrument: "Tamborim"
+          pan: 0.3
+        - name: "cho1"
+          staff: "Chocalho"
+          instrument: "Chocalho"
+          pan: 0.2
+          gain: -6.0
+        - name: "repi1"
+          staff: "Repi"
+          instrument: "Repi"
+        - name: "1a"
+          staff: "Primeira"
+          instrument: "Primeira"
+          pan: 0.6
+          gain: -6.0
+        - name: "2a"
+          staff: "Segunda"
+          instrument: "Segunda"
+          pan: -0.6
+          gain: -6.0
+        - name: "3a"
+          staff: "Terceira"
+          instrument: "Terceira"
+          gain: -6.0
+        - name: "apito"
+          staff: "Apito"
+          instrument: "Apito"
+        - name: "voz"
+          staff: "Voz"
+          instrument: "Voz"
+        - name: "count_in"
+          staff: "Count In"
+          instrument: "Apito"
+    

@@ -36,32 +36,32 @@ instruments:
     - name: "Chocalho"
       patterns:
         - pattern: "x"
-          samples: [ "estácio/100bpm/chocalho-x-1.wav" ]
+          samples: [ "100bpm/chocalho-x-1.wav" ]
         - pattern: "/"
           aliases: [ "xxxx" ]
-          samples: [ "estácio/100bpm/chocalho-xxxx-*.wav" ]
+          samples: [ "100bpm/chocalho-xxxx-*.wav" ]
         - pattern: "|/ / / /"
           aliases: [ "|xxxx xxxx xxxx xxxx" ]
-          samples: [ "estácio/100bpm/chocalho-groove-*.wav" ]
+          samples: [ "100bpm/chocalho-groove-*.wav" ]
       auto_cliches: True 
 
     - name: "Caixa"
       patterns:
         - pattern: "|XxLx"
           aliases: [ "|xxxx", "|/" ]
-          samples: [ "estácio/100bpm/caixa-xxlx-1.wav", "estácio/100bpm/caixa-xxlx-2.wav" ]
+          samples: [ "100bpm/estácio/caixa-xxlx-1.wav", "100bpm/estácio/caixa-xxlx-2.wav" ]
         - pattern: "|/ / / /"
           aliases: [ "|Xxlx Xlxl Xlxl Xlxlx" ]
-          samples: [ "estácio/100bpm/caixa-groove-1.wav" ]
+          samples: [ "100bpm/estácio/caixa-groove-1.wav" ]
         - pattern: "/"
           aliases: [ "xxxx", "Xlxl" ]
-          samples: [ "estácio/100bpm/caixa-xxxx-*.wav" ]
+          samples: [ "100bpm/estácio/caixa-xxxx-*.wav" ]
         - pattern: "x"
-          samples: [ "estácio/100bpm/caixa-x___-*.wav" ]
+          samples: [ "100bpm/estácio/caixa-x___-*.wav" ]
         - pattern: "z"
-          samples: [ "estácio/100bpm/caixa-z-*.wav" ]
+          samples: [ "100bpm/estácio/caixa-z-*.wav" ]
         - pattern: "l"
-          samples: [ "estácio/100bpm/caixa-l-*.wav" ]
+          samples: [ "100bpm/estácio/caixa-l-*.wav" ]
       cliches:
         - pattern: "xzl"
           reciept: "x:x;z:.x.;l:..x"
@@ -71,9 +71,9 @@ instruments:
     - name: "Repi"
       patterns:
         - pattern: "cccc cccc"
-          samples: [ "estácio/100bpm/repi-chamada-*.wav" ]
+          samples: [ "100bpm/repi-chamada-*.wav" ]
         - pattern: "x"
-          samples: [ "estácio/100bpm/repi-x-*.wav" ]
+          samples: [ "100bpm/repi-x-*.wav" ]
         - pattern: "s"
           samples: [ "100bpm/repi-slap-*.wav" ]
         - pattern: "h"
@@ -88,7 +88,7 @@ instruments:
           samples: [ "100bpm/repi-open-*.wav" ]
         - pattern: "/"
           aliases: ["xxxx"]
-          samples: [ "estácio/100bpm/repi-xxxx-*.wav" ]
+          samples: [ "100bpm/repi-xxxx-*.wav" ]
       cliches:
         - pattern: "zz.s"
           reciept: "z:x;s:...x"
@@ -125,7 +125,7 @@ instruments:
       patterns:
         - pattern: "x"
           aliases: ["1"]
-          samples: [ "estácio/100bpm/surdo_1a-*.wav" ]
+          samples: [ "100bpm/surdo_1a-*.wav" ]
       cliches:
         - pattern: "xxxx"
           reciept: "x:x;x:.x..;x:..x.;x:...x"
@@ -134,7 +134,7 @@ instruments:
       patterns:
         - pattern: "x"
           aliases: ["2"]
-          samples: [ "estácio/100bpm/surdo_2a-*.wav" ]
+          samples: [ "100bpm/surdo_2a-*.wav" ]
       cliches:
         - pattern: "xxxx"
           reciept: "x:x;x:.x..;x:..x.;x:...x"
@@ -143,7 +143,7 @@ instruments:
       patterns:
         - pattern: "x"
           aliases: ["3"]
-          samples: [ "estácio/100bpm/surdo_3a-*.wav" ]
+          samples: [ "100bpm/surdo_3a-*.wav" ]
       cliches:
         - pattern: "xxxx"
           reciept: "x:x;x:.x..;x:..x.;x:...x"
@@ -152,14 +152,14 @@ instruments:
     - name: "Tamborim"
       patterns:
         - pattern: "x"
-          samples: [ "estácio/100bpm/tamborim-x-*.wav" ]
+          samples: [ "100bpm/tamborim-x-*.wav" ]
         - pattern: "|xxx xxx xxx xxx x... .... .... ...." 
-          samples: [ "estácio/100bpm/tamborim-subida-*.wav" ]
+          samples: [ "100bpm/tamborim-subida-*.wav" ]
         - pattern: "/"
           aliases: [ "xxxx" ]
-          samples: [ "estácio/100bpm/tamborim-single_groove-*.wav" ]
+          samples: [ "100bpm/tamborim-single_groove-*.wav" ]
         - pattern: "xxx"
-          samples: [ "estácio/100bpm/tamborim-xxx-*.wav" ]
+          samples: [ "100bpm/tamborim-xxx-*.wav" ]
       auto_cliches: True 
 ensambles:
     - name: "Simple"
