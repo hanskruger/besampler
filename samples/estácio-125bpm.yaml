@@ -85,6 +85,32 @@ instruments:
 
     - name: "Repi"
     - name: "Voz"
+      patterns:
+        - pattern: "1"
+          samples: [ "100bpm/voz-um-1.wav" ]
+        - pattern: "2"
+          samples: [ "100bpm/voz-dois-1.wav" ]
+        - pattern: "3"
+          samples: [ "100bpm/voz-tres-1.wav" ]
+        - pattern: "4"
+          samples: [ "100bpm/voz-quatro-1.wav" ]
+        - pattern: "hey"
+          aliases: [ "hey."]
+          samples: [ "100bpm/voz-hey-1.wav" ]
+        - pattern: "nana nana na.. na.."
+          samples: [ "100bpm/voz-nana_nana_na_na-1.wav" ]
+        - pattern: "es"
+          samples: [ "100bpm/voz-es-1.wav" ]
+        - pattern: "pe"
+          samples: [ "100bpm/voz-pe-1.wav" ]
+        - pattern: "ran"
+          samples: [ "100bpm/voz-ran-1.wav" ]
+        - pattern: "ca"
+          samples: [ "100bpm/voz-ca-1.wav" ]
+      cliches:
+        - pattern: "espe"
+          reciept: "es:x.;pe:.x"
+      auto_cliches: False
 
 
 ensambles:
