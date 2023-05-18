@@ -1,9 +1,9 @@
 
          1
-Repi     |x... ..x. x.x. x.x.|x... xxx  x... ....|x... ..x. x.x. x.x.|x... xxx  x... ....|
+Repi     |h... ..xs h.h. h.h.|h... hhh  h... ....|h... ..xs h.h. h.h.|h... hhh  h... ....|
 
          5
-Repi     |x... ..x. x.x. x.x.|x... xxx  x... ....|x... x... x... x...|x... xxx  x... ....| 
+Repi     |h... ..xs h.h. h.h.|h... hhh  h... ....|h... h... h... h...|h... hhh  h... ....| 
 Voz      |.... .... .... ....|.... .... .... ....|.... .... .... ....|.... .... .... hey.|
 
          10
@@ -21,39 +21,11 @@ Tamborim |/    /    /    /   |/    /      /    x   |x    x    x    x   |x... xxx
 Chocalho |/    /    /    /   |/    /      /    x   |x    x    x    x   |x... xxx  xxx  x...|
 Repi     |/    /    /    /   |/    /      /    x   |x    x    x    x   |x... xxx  xxx  x...|
 Caixa    |/    /    /    /   |/    /      /    x   |x    x    x    x   |x... xxx  xxx  x...|
-Primeira |x... ..x. ..x. ..x.|x... ....   .... ....|x    x    x    x   |x... xxx  xxx  x...|
-Segunda  |.... .... x... x...|.... ....   .... ....|x    x    x    x   |x... xxx  xxx  x...|
-Terceira |.... .... .... ....|.... xxxx   x... ....|x    x    x    x   |x... xxx  xxx  x...|
-
-         20
-Tamborim |x... ..x. x.x. x.x.|x... xxxx x... ....|x... ..x. x.x. x.x.|x... xxxx x... ....|
-Chocalho |x... ..x. x.x. x.x.|x... xxxx x... ....|x... ..x. x.x. x.x.|x... xxxx x... ....|
-
-         25
-Tamborim |x... ..x. x.x. x.x.|x... xxxx x... ....|x... x... x... x...|x... xxx  x... ....| 
-Chocalho |x... ..x. x.x. x.x.|x... xxxx x... ....|x... x... x... x...|x... xxx  x... ....| 
-Voz      |.... .... .... ....|.... .... .... ....|.... .... .... ....|.... .... .... hey.|
-
-         30
-Tamborim |/    /    /    /   |/    /       /    /   |/    /    /    /   |/    /      /    /   |
-Chocalho |/    /    /    /   |/    /       /    /   |/    /    /    /   |/    /      /    /   |
-Repi     |/    /    /    /   |/    /       /    /   |/    /    /    /   |/    /      /    /   |
-Caixa    |/    /    /    /   |/    /       /    /   |/    /    /    /   |/    /      /    /   |
-Primeira |x... ..x. ..x. ..x.|x... ....    .... ....|x... ..x. ..x. ..x.|x... ....   .... ....|
-Segunda  |.... .... x... x...|.... ....    .... ....|.... .... x... x...|.... ....   .... ....|
-Terceira |.... .... .... ....|.... xxxx    x... ....|.... .... .... ....|.... xxxx   x... ....|
-Apito    |.... .... .... ....|.... ....    .... ....|.... .... .... ....|.... ....   .... ....|
-
-         35
-Tamborim |/    /    /    /   |/    /      /    x   |x    x    x    x   |x... xxx  xxx  x...|
-Chocalho |/    /    /    /   |/    /      /    x   |x    x    x    x   |x... xxx  xxx  x...|
-Repi     |/    /    /    /   |/    /      /    x   |x    x    x    x   |x... xxx  xxx  x...|
-Caixa    |/    /    /    /   |/    /      /    x   |x    x    x    x   |x... xxx  xxx  x...|
 Primeira |x... ..x. ..x. ..x.|x... ....   .... ....|x    x    x    x   |x... xxx  xxx  x.x.|
 Segunda  |.... .... x... x...|.... ....   .... ....|x    x    x    x   |x... xxx  xxx  x...|
-Terceira |.... .... .... ....|.... xxxx   x... ....|x    x    x    x   |x... xxx  xxx  x...|
+Terceira |.... .... .... ....|.... xxxx   x... ....|x    x    x    x   |x... xxx  xxx  x.x.|
 
-         40
+         20
 Chocalho |.... .... .... ....|.... .... .... ....|/    /    /    /   |/    /    /    /   |
 Tamborim |xxx  xxx  xxx  xxx |x... .... .... ....|/    /    /    /   |/    /    /    /   |
 Repi     |/    /    /    /   |/    /    /    /   |/    /    /    /   |/    /    /    /   |
@@ -62,7 +34,7 @@ Primeira |.... x... .... x...|.... x... .... x...|.... x... .... x...|.... x... 
 Segunda  |x... .... x... ....|x... .... x... ....|x... .... x... ....|x... .... x... ....|
 Terceira |..x. ..x. ..x. ..x.|..x. ..x. ..x. xx.x|.... x.x. .... xx.x|.... x.x. ..x. xx.x|
 
-         45 
+         25 
 Tamborim |/    /    /    /   |/    /    /    /   |/    /    /    /   |xxxx x.x. x... ....|
 Chocalho |/    /    /    /   |/    /    /    /   |/    /    /    /   |xxxx x.x. x... ....|
 Repi     |/    /    /    /   |/    /    /    /   |/    /    /    /   |xxxx x.x. x... ....|
