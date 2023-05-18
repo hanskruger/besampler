@@ -84,6 +84,37 @@ instruments:
       auto_cliches: True 
 
     - name: "Repi"
+      patterns:     
+        - pattern: "|s s s s"
+          aliases: [ "|x.x. x.x. cccc cccc", "|x.h. x.h. cccc cccc" ]
+          samples: [ "125bpm/repi-subida0-*.wav" ]
+        - pattern: "/"
+          aliases: [ "xxxx" ]
+          samples: [ "125bpm/repi-groove-0-*.wav" ]
+        - pattern: "|xxxx x.x. x"
+          samples: [ "125bpm/repi-virada-*.wav" ]
+        - pattern: "cccc cccc"
+          samples: [ "125bpm/repi-cccc-cccc-*.wav" ]
+          random: True
+        - pattern: "x"
+          samples: [ "125bpm/repi-x-*.wav" ]
+          random: True
+        - pattern: "h"
+          samples: [ "125bpm/repi-h-*.wav" ]
+          random: True
+        - pattern: "s"
+          samples: [ "125bpm/repi-s-*.wav" ]
+          random: True
+      cliches:
+        - pattern: "..xs"
+          reciept: "x:..x.;s:...x"
+        - pattern: "h.h."
+          reciept: "h:x;h:.x"
+        - pattern: "hhh"
+          reciept: "h:x..;h:.x.;h:..x"
+
+      auto_cliches: True 
+
     - name: "Voz"
       patterns:
         - pattern: "1"
