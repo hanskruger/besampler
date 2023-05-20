@@ -3,13 +3,13 @@ Bosa Força
 
 --
          1
-Tamborim |xxxx x.x. x... x.x.|x..x ..x. .x.. x.x.|/    /    /    x.x.|x..x ..x. .x.. x.x.|
-Chocalho |xxxx x.x. x... x.x.|x..x ..x. .x.. x.x.|/    /    /    x.x.|x..x ..x. .x.. x.x.|
-Repi     |xxxx x.x. x... x.x.|x..x ..x. .x.. x.x.|/    /    /    x.x.|x..x ..x. .x.. x.x.|
-Caixa    |XxLx x.x. x... x.x.|x..x ..x. .x.. x.x.|/    /    /    x.x.|x..x ..x. .x.. x.x.|
-Primeira |.... ..x. .... x.x.|x..x ..x. .x.. x.x.|x... .... .... ....|x..x ..x. .x.. x.x.|
-Segunda  |x... .... x... x.x.|x..x ..x. .x.. x.x.|x... .... .... ....|x..x ..x. .x.. x.x.|
-Terceira |.... ..x. .... x.x.|x..x ..x. .x.. x.x.|x... .... .... ....|x..x ..x. .x.. x.x.|
+Tamborim |xxxx x.x. x... x.x.|x..x ..x. .x.. .xx|/    /    /    x.x.|x..x ..x. .x.. x.x.|
+Chocalho |xxxx x.x. x... x.x.|x..x ..x. .x.. .xx|/    /    /    x.x.|x..x ..x. .x.. x.x.|
+Repi     |xxxx x.x. x... x.x.|x..x ..x. .x.. .xx|/    /    /    x.x.|x..x ..x. .x.. x.x.|
+Caixa    |XxLx x.x. x... x.x.|x..x ..x. .x.. .xx|/    /    /    x.x.|x..x ..x. .x.. x.x.|
+Primeira |.... ..x. .... x.x.|x..x ..x. .x.. .xx|x... .... .... x.x.|x..x ..x. .x.. x.x.|
+Segunda  |x... .... x... x.x.|x..x ..x. .x.. .xx|x... .... .... x.x.|x..x ..x. .x.. x.x.|
+Terceira |.... ..x. .... x.x.|x..x ..x. .x.. .xx|x... .... .... x.x.|x..x ..x. .x.. x.x.|
 
          5
 Tamborim |/    /    /    /   |/    /    /    /   |/    /    /    x...|x..x ..x. .x.. x.x.|
@@ -27,7 +27,7 @@ Repi     |x.x. x.x. cccc cccc|x... x.x. x.x. x.x.|xxxx x.x. x... ....|
 Caixa    |x... .... .... ....|.... x.x. x.x. x.x.|xxxx x.x. x... ....|
 Primeira |x... .... .... ....|.... x.x. x.x. x.x.|x... ..x. .... ..x.|
 Segunda  |x... .... .... ....|.... x.x. x.x. x.x.|x... .... x... ....|
-Terceira |x... .... .... ....|.... x.x. x.x. x.x.|x... ..x. .... ....|
+Terceira |x... .... .... ....|.... x.x. x.x. x.x.|x... ..x. .... ..x.|
 
          15 Subida
 Chocalho |.... .... .... ....|.... .... .... ....|/    /    /    /   |/    /    /    /   |

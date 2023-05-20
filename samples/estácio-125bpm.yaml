@@ -112,6 +112,10 @@ instruments:
           reciept: "h:x;h:.x"
         - pattern: "hhh"
           reciept: "h:x..;h:.x.;h:..x"
+        - pattern: "x.h."
+          reciept: "x:x;h:.x"
+        - pattern: "h.x."
+          reciept: "h:x;x:.x"
 
       auto_cliches: True 
 
