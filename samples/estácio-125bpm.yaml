@@ -17,7 +17,9 @@ instruments:
         - pattern: "|xxxx x.x. x..."
           samples: [ "125bpm/chocalho-virada-*.wav" ]
       auto_cliches: True 
-
+      cliches:
+        - pattern: ".x.x"
+          reciept: "x:.x..;x:...x"
     - name: "Caixa"
       patterns:     
         - pattern: "|/ / / /"
@@ -35,6 +37,9 @@ instruments:
         - pattern: "x"
           samples: [ "125bpm/caixa-x-*.wav" ]
       auto_cliches: True 
+      cliches:
+        - pattern: ".x.x"
+          reciept: "x:.x..;x:...x"
 
     - name: "Primeira"
       patterns:
@@ -82,6 +87,11 @@ instruments:
           samples: [ "125bpm/tamborim-x-*.wav" ]
           random: True
       auto_cliches: True 
+      cliches:
+        - pattern: ".x.x"
+          reciept: "x:.x..;x:...x"
+        - pattern: ".xx."
+          reciept: "x:.x..;x:..x."
 
     - name: "Repi"
       patterns:     
@@ -116,6 +126,8 @@ instruments:
           reciept: "x:x;h:.x"
         - pattern: "h.x."
           reciept: "h:x;x:.x"
+        - pattern: ".x.x"
+          reciept: "x:.x..;x:...x"
 
       auto_cliches: True 
 
