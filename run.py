@@ -31,9 +31,11 @@ parser.add_argument('--count_in', action='store_true')  # on/off flag
 parser.add_argument('--click', action='store_true')  # on/off flag
 parser.add_argument('--info', action='store_true', help="print score info and exit")
 parser.add_argument('--tracks', action='store_true')
-parser.add_argument('--bpm', default=None, type=int, help="The output speed")
+parser.add_argument('--bpm', default=None, type=float, help="The output speed")
 parser.add_argument('-f', '--format', default="mp3", help='format of output (wav|mp3)')  # on/off flag
 parser.add_argument('--ensamble', help='Specify, which ensamble to use.')  # on/off flag
+parser.add_argument('--script', help='Specify the range to be played.')  # on/off flag
+parser.add_argument('--tex', action='store_true', help='Enabling tex parsing mode.')  # on/off flag
 
 parser.add_argument('--mute', help='Mute the given aritsts.')  # on/off flag
 #parser.add_argument('--mute_staff', help='Mute all artists of the given staff.')  # on/off flag
@@ -45,7 +47,6 @@ parser.add_argument('--solo', help='Only play the artists listed.')  # on/off fl
 #parser.add_argument('--solo_instrument', help='Only play the artists playinf the given instruments.')  # on/off flag
 
 parser.add_argument('--loop', default=1, type = int, help='Number of times a given score should be played.')
-
 
 def click():
     ins = Instrument("Click", bpm = 100)
@@ -119,7 +120,10 @@ def main(args):
     if (args.tracks):
         player.add_track_callback(write_track_cb)
 
-    score = Score.from_file(args.score)
+    if (args.tex):
+        score = Score.from_file(args.score, "TEX")
+    else:
+        score = Score.from_file(args.score)
 
     if (args.info):
         print_info(args, score, player, bateria, ensamble)
@@ -142,6 +146,9 @@ def main(args):
         player.add_prog_callback(print_programm)
         player.synthesize(score, staff= args.debug_programm)
         return True
+
+    if (args.script):
+        player._script = list(range(int(args.script), score.length))
 
 
     snd = player.synthesize(score)

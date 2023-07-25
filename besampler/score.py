@@ -11,6 +11,8 @@ from pathlib import Path
 from .utils import TimeSignature, Clock
 from .staff import Staff
 
+StaffLineMatch = namedtuple("StaffLineMatch",["line", "instrument", "staff_line", "tail" ])
+
 class Score():
     def __init__(self, time_signature = TimeSignature()):
         self._score = []
@@ -108,28 +110,64 @@ class Score():
         # transpose our input line.
         for bar in  range(0, bar_count):
             self.add_measure(*list(map(lambda x: x(staffs[x][bar], line=line), instruments)))
+    
+    def match_latex(self, s, line_no = 0):
+        '''
+        Match for Latex lines  
+
+        '''
+        latex_regex = "(\w[\d\s\w]{1,15})&([&a-zA-Z0-9\s\.\/]+)\\\\(.*)"
+        m = re.match(latex_regex, s)
+        if not m:
+            return None
+        staff = m.group(2).split("&")
+        if (len(staff) % self._time_signature.pulses) != 0:
+            raise RuntimeError(f"Staff line in line {line_no} need a multiple of {self._time_signature.pulses()} entries.")
+        #regroup the staff line in tuples of self._time_signature.pulses
+        norm_staff_string = f"{m.group(1)}|";
+        for i in range(0, int(len(staff)/self._time_signature.pulses)):
+            norm_staff_string = norm_staff_string + " ".join( staff[ i * self._time_signature.pulses : (i+1) * self._time_signature.pulses ]) + "|"
+        # Normalize the staff string for further processing
+        # first schek, that we have a multiple of beats per measure in thhis staff line
+        return StaffLineMatch(s, m.group(1).strip(), norm_staff_string, m.group(3))
+    
+    @staticmethod
+    def match_text(s, line_no):
+        # TODO!
+        return StaffLineMatch(s, None, s, None)
+        pass
 
     @staticmethod
-    def from_file(filename):
+    def from_file(filename, mode= "TXT"):
         score = Score()
+
+        # latex regex for staff line:
+        txt_regex   = ""
 
         with open(filename, "r") as f:
             staffline = []
             lineno = 0
             for line in map(lambda x: x.strip(), f.readlines()):
                 lineno = lineno + 1
+                if (line and line[0] == "#"):
+                    continue
                 if(not line):
                     if(staffline):
                         score.add_staff_line(staffline, lineno)
                         staffline = []
                     continue
                 #print(line)
-                measures = line.split("|")
+                m = score.match_latex(line, lineno) if mode == "TEX" else score.match_text(line, lineno)
+
+                if (not m):
+                    continue
+                
+                measures = m.staff_line.split("|")
                 if (len(measures)  > 1):
-                    staffline.append(line)
+                    staffline.append(m.staff_line)
                     # parse staffline
                     pass
         return score
-
+    
 
 
