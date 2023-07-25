@@ -76,7 +76,8 @@ class WaveFile(object):
     def speedup(self, ratio= 1.0):
         if (1.0 == ratio):
             return self
-        self._audio_data = self._audio_data.speedup(1.35, 75, 10)
+        self._audio_data = self._audio_data.speedup(ratio, 75, 10)
+        return self
         
 
     def gain(self, db):
