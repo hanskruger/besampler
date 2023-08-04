@@ -161,6 +161,9 @@ instruments:
         - pattern: "xxx"
           samples: [ "100bpm/tamborim-xxx-*.wav" ]
       auto_cliches: True 
+      cliches:
+        - pattern: ".x.x"
+          reciept: "x:.x..;x:...x"
 ensambles:
     - name: "Simple"
       artists: 

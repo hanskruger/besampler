@@ -15,7 +15,7 @@ setup(
     license='MIT',
     keywords='audio sound high-level',
     url='https://bloco-esperança.de',
-    packages=['besamüpler'],
+    packages=['besampler'],
     long_description=__doc__,
 )
 

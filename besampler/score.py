@@ -122,7 +122,7 @@ class Score():
             return None
         staff = m.group(2).split("&")
         if (len(staff) % self._time_signature.pulses) != 0:
-            raise RuntimeError(f"Staff line in line {line_no} need a multiple of {self._time_signature.pulses()} entries.")
+            raise RuntimeError(f"Staff line in line {line_no} need a multiple of {self._time_signature.pulses} entries.")
         #regroup the staff line in tuples of self._time_signature.pulses
         norm_staff_string = f"{m.group(1)}|";
         for i in range(0, int(len(staff)/self._time_signature.pulses)):

@@ -1,0 +1,98 @@
+\documentclass[a4paper,12pt]{article}
+\renewcommand{\familydefault}{\ttdefault}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\usepackage{colortbl,xcolor}
+\usepackage[top=25mm,bottom=15mm,right=15mm,left=15mm]{geometry}
+\usepackage{fancyhdr}
+
+\usepackage[colorlinks,linkcolor={black},citecolor={black},urlcolor={black}]{hyperref}
+
+\fancypagestyle{plain}{%
+  \renewcommand{\headrulewidth}{0pt}%
+  \fancyhf{}%
+  \fancyfoot[C]{\begin{picture}(0,0) \put(-10,0){%
+  %\includegraphics[width=1cm]{logo} %
+  } \end{picture}\footnotesize}%
+  \fancyfoot[R]{\thepage}%
+}
+
+
+\lfoot{\begin{picture}(0,0) \put(-10,0){\includegraphics[width=1cm]{logo}} \end{picture}}
+\rfoot{\thepage}
+
+%opening
+\title{Telecoteco Simples}
+\author{}
+\date{}
+
+\definecolor{Gray}{gray}{0.85}
+
+\newcounter{measure}
+\setcounter{measure}{1}
+\def\m{\themeasure\stepcounter{measure}}
+\newcommand{\mhead}[1]{\multicolumn{4}{l|}{\m{} #1}}
+
+\newcolumntype{A}[0]{>{}p{5em}}
+\newcolumntype{C}[0]{>{\centering\arraybackslash}p{2.5em}}
+\newcolumntype{D}[0]{>{\columncolor{Gray}\centering\arraybackslash}p{2em}}
+
+
+\newenvironment{staffline}{\begingroup
+\small
+\setlength{\tabcolsep}{0pt} % Default value: 6pt
+%^\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{tabular}{A|CDCD|CDCD|CDCD|CDCD|}
+}{
+\end{tabular}
+\endgroup
+\vspace{1ex}
+}
+\sloppy
+
+\begin{document}
+\pagestyle{plain}
+\maketitle
+
+\begin{staffline}
+4/4      &\mhead{}           &\mhead{}           &\mhead{}           &\mhead{} \\ \hline
+Chocalho &....&....&....&....&....&....&....&....&/   &/   &/   &/   &/   &/   &/   &/   \\
+Tamborim &....&....&....&....&....&....&....&....&x.x.&x.x.&x.x.&xx.x&.x.x&..x.&x.x.&x..x\\
+Repi     &x.h.&x.h.&cccc&cccc&/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   \\
+Caixa    &....&....&....&....&....&/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   \\
+Primeira &....&....&....&....&....&x...&....&x...&....&x...&....&x...&....&x...&....&x...\\
+Segunda  &....&....&....&....&....&....&x...&....&x...&....&x...&....&x...&....&x...&....\\
+Terceira &....&....&....&....&....&x.x.&..x.&..x.&..x.&..x.&..x.&xx.x&....&x.x.&....&xx.x\\
+\end{staffline}
+
+\begin{staffline}
+         &\mhead{}           &\mhead{}           &\mhead{}           &\mhead{} \\ \hline
+Chocalho &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &xxxx&x.x.&x...&....\\
+Tamborim &.x.x&..x.&x.x.&x..x&.x.x&..x.&x.x.&x..x&.x.x&..x.&x.x.&x...&xxxx&x.x.&x...&....\\
+Repi     &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &xxxx&x.x.&x...&....\\
+Caixa    &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &/   &xxxx&x.x.&x...&....\\
+Primeira &....&x...&....&x...&....&x...&....&x...&....&x...&....&x...&....&..x.&....&....\\
+Segunda  &x...&....&x...&....&x...&....&x...&....&x...&....&x...&....&x...&....&x...&....\\
+Terceira &....&x.x.&..x.&xx.x&....&x.x.&..x.&..x.&..x.&..x.&..x.&xx.x&....&..x.&....&....\\
+Apito    &x...&....&....&....&x...&....&....&....&x...&x...&x...&x...&....&....&....&....\\ \hline
+\end{staffline}
+
+\section*{Anmerkungen}
+\begin{itemize}
+ \item Telecoteco ab Takt 4, wobei der Auftakt 3 immer gespielt wird. 
+ In dieser vereinfachten Version werden die beiden Doppelschläge weggelassen.  
+ \item Der Auftakt (Takt 3) besteht aus 6 Achtzehntel.
+ \item Beider Drehung (virada), stoppen die Tamborims auf der 4. Viertel (Siehe Takt 7, 4. Zählzeit).
+\end{itemize}
+
+\section*{Referenzen}
+\footnotesize
+\begin{itemize}
+ \item \url{https://youtu.be/EictRYyBzcA}
+ \item \url{https://youtu.be/XPsC2085AQQ}
+\end{itemize}
+
+
+
+\end{document}
