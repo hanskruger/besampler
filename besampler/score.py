@@ -13,10 +13,34 @@ from .staff import Staff
 
 StaffLineMatch = namedtuple("StaffLineMatch",["line", "instrument", "staff_line", "tail" ])
 
+def _parse_playset(inp):
+    '''
+    >>> _parse_playset("1-4")
+    [0, 1, 2, 3]
+    >>> _parse_playset("1-3,1-4")
+    [0, 1, 2, 0, 1, 2, 3]
+    >>> _parse_playset("1-3,1-4,4")
+    [0, 1, 2, 0, 1, 2, 3, 3]
+    '''
+    idx = []
+    for c in inp.split(","):
+        if c.isdecimal():
+            idx.append(int(c) - 1)
+        elif "-" in c:
+            c1 = c.split("-")
+            if len(c1) != 2:
+                raise RuntimeError("'{c}' is not a valid repeat notation.")
+            idx.extend( range( int(c1[0]) - 1, int(c1[1])))
+    return idx
+ 
+
+
+
 class Score():
     def __init__(self, time_signature = TimeSignature()):
         self._score = []
         self._time_signature = time_signature
+        self._playset = None
 
     @property
     def time_signature(self):
@@ -39,19 +63,19 @@ class Score():
 
     def loop(self, num):
         new_score = [] 
+        idx = self._idx()
         for i in range(num):
-            new_score.extend(self._score)
-        self._score = new_score
+            new_score.extend(idx)
         return self 
-
 
     def add_count_in(self, pattern = "x x x x", staff = Staff("Count In")):
         '''
         Prepends a bar with a count in.
         '''
         self._score.insert(0, [ staff(pattern), ])
+        self._playset = [0,] +  list(map(lambda x: x + 1, self._playset))
         return self 
-    
+
     def add_click(self,  pattern = "X x x x", staff = Staff("Click")):
         '''
         Add a extra staff line with a click.
@@ -70,17 +94,28 @@ class Score():
     @property
     def length(self):
         '''Return the length in bars'''
-        return len(self._score)
+        return len(self._idx())
+
+    def playset(self, inp):
+        self._playset = _parse_playset(inp)
+        return self
+
+    def _idx(self):
+        if not self._playset:
+            return list(range(0, len(self._score)))
+        return self._playset
 
     def measures(self, staff = None):
+        idx = self._idx()
+
         if None is staff:
-            for m in self._score:
-                yield m
+            for m in idx: 
+                yield self._score[m]
             return
 
-        for m in self._score:
+        for m in idx:
             found = False
-            for e in m:
+            for e in self._score[m]:
                 if e.staff == staff:
                     found = True
                     yield e
@@ -163,7 +198,7 @@ class Score():
                     continue
                 
                 measures = m.staff_line.split("|")
-                if (len(measures)  > 1):
+                if (len(measures)  > 3):
                     staffline.append(m.staff_line)
                     # parse staffline
                     pass

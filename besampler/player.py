@@ -107,8 +107,9 @@ class Player():
         ONE_BAR_PAUSE = score.time_signature.fill_bar("-") 
         instrument = artist.instrument
         measures = list(score.measures(staff))
-        #print(staff, measures)
         staff_line = list(map(parse_tone, reduce(lambda a,b: a+b,  map(lambda x: x.measure.notes if x else ONE_BAR_PAUSE, measures))))
+        #print(staff, staff_line)
+
         prog = []
         last_pattern = None
 

@@ -47,6 +47,8 @@ parser.add_argument('--solo', help='Only play the artists listed.')  # on/off fl
 #parser.add_argument('--solo_instrument', help='Only play the artists playinf the given instruments.')  # on/off flag
 
 parser.add_argument('--loop', default=1, type = int, help='Number of times a given score should be played.')
+parser.add_argument('--playset', type = str, help='Playset')
+
 
 def click():
     ins = Instrument("Click", bpm = 100)
@@ -129,11 +131,15 @@ def main(args):
         print_info(args, score, player, bateria, ensamble)
         sys.exit()
 
+    if (args.playset):
+        score.playset(args.playset)
+    
     if (args.loop):
         score.loop(args.loop)
 
     if(args.count_in):
         score.add_count_in()
+
     if(args.click):
         score.add_click()
     
