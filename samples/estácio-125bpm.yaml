@@ -7,6 +7,19 @@ instruments:
           samples: [ "whistle.wav" ]
       auto_cliches: True 
 
+    - name: "Agogo"
+      auto_pattern: True
+      patterns:
+        - pattern: "a"
+          samples: [ "agogo/a-*.wav" ]
+        - pattern: "b"
+          samples: [ "agogo/b-*.wav" ]
+        - pattern: "c"
+          aliases: [ "x" ]
+          samples: [ "agogo/c-*.wav" ]
+        - pattern: "d"
+          samples: [ "agogo/d-*.wav" ]
+
     - name: "Chocalho"
       patterns:
         - pattern: "x"
@@ -173,6 +186,9 @@ ensambles:
           staff: "Tamborim"
           instrument: "Tamborim"
           pan: 0.3
+        - name: "ago1"
+          staff: "Agogo"
+          instrument: "Agogo"
         - name: "cho1"
           staff: "Chocalho"
           instrument: "Chocalho"

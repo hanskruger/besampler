@@ -13,10 +13,11 @@ from .pattern import Pattern
 
 class Instrument():
     pass
-    def __init__(self, name, bpm = 120):
+    def __init__(self, name, bpm = 120, auto_pattern = False):
         self._name = name
         self._patterns = {}
         self._bpm = bpm
+        self._auto_pattern = auto_pattern
         pass
 
     def add_pattern(self, *patterns):
@@ -40,6 +41,10 @@ class Instrument():
     @property
     def name(self):
         return self._name
+    
+    @property
+    def auto_pattern(self):
+        return self._auto_pattern
 
     def __str__(self):
         return self._name

@@ -9,6 +9,8 @@ from pydub import AudioSegment
 from pathlib import Path
 from functools import total_ordering
 from math import ceil
+import functools
+import random
 
 from .wavefile import WaveFile
 from .pattern  import match_pause, match_repeat, parse_tone
@@ -101,6 +103,49 @@ class Player():
         self._artist.setdefault(staff, []).append(Artist(name, staff, settings, instrument))
         return settings
 
+
+    def _auto_pattern(self, artist, staff, score, staff_line, idx):
+        '''
+        Return a none empty array, if a patern can be copiled usig aauto-pattern algorithm. Otherwise return None.
+        '''
+        pattern = staff_line[idx]
+
+        if (not artist.instrument.auto_pattern):
+            return None
+
+        prog = list()
+        # First: compute a program
+        for i in range(0, len(pattern)):
+            if match_pause(pattern[i]):
+                continue
+            sub_patterns = list(filter(lambda x: x.match([ pattern[i] ], 0, 0, time_signature = score.time_signature), iter(artist.instrument)))
+            if not sub_patterns: # if one single piece is missing, we abort!
+                return None
+            #print( i, pattern[i], len(sub_patterns))
+            prog.append( (i, sub_patterns ) )
+
+        if (not prog):
+            return None
+
+        # second: Compile the pattern using that programm.
+        from .sample_builder import SampleBuilder
+        from .pattern import Pattern
+
+        variations = min(13, functools.reduce(lambda x,y: x*y, map( lambda x: len(x[1][0].samples), prog)))
+
+        pat = artist.instrument.add_pattern(pattern).random(True) # this wil alos add the new pattern to the DB, we we wwill find it next time.
+
+        for i in range(0, variations):
+            sample_builder = SampleBuilder(self._bpm, self._freq)
+            for e in prog:
+                tp = "."*len(pattern)
+                tp = tp[0:e[0]] + "x" + tp[e[0]+1:]
+          
+                sample_builder.add_subsample(random.choice(e[1][0].samples), tp)
+            pat.add_samples(sample_builder.build())
+
+        return [  pat,  ]
+
     def _compile_artist(self, artist, staff, score):
         logging.info(f"Generating audio track for artist {artist.name}({artist.instrument.name}), staff {staff}.")
         head_index = 0;
@@ -131,12 +176,12 @@ class Player():
                     # todo: handle repeat of last n beats
                     raise RuntimeError(f"Repeat not supported yet.")
                     pass
-                if(True):
+                # Try auto_patterns
+                patterns = self._auto_pattern(artist, staff, score, staff_line, idx)
+                if(not patterns):
                     logging.warning(f"No pattern found for {staff_line[idx]}(bar {ceil(idx / score.time_signature.pulses)}) for instrument {artist.instrument.name}.")
                     idx += 1
                     continue
-                else:
-                    raise RuntimeError(f"No pattern found for {staff_line[idx]}({idx}).")
 
             # choose most appropriate patter
             pat = patterns[0]

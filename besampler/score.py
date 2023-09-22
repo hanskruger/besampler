@@ -145,7 +145,7 @@ class Score():
         # transpose our input line.
         for bar in  range(0, bar_count):
             self.add_measure(*list(map(lambda x: x(staffs[x][bar], line=line), instruments)))
-    
+ 
     def match_latex(self, s, line_no = 0):
         '''
         Match for Latex lines  
@@ -165,7 +165,7 @@ class Score():
         # Normalize the staff string for further processing
         # first schek, that we have a multiple of beats per measure in thhis staff line
         return StaffLineMatch(s, m.group(1).strip(), norm_staff_string, m.group(3))
-    
+
     @staticmethod
     def match_text(s, line_no):
         # TODO!
@@ -196,13 +196,13 @@ class Score():
 
                 if (not m):
                     continue
-                
+
                 measures = m.staff_line.split("|")
                 if (len(measures)  > 3):
                     staffline.append(m.staff_line)
                     # parse staffline
                     pass
         return score
-    
+
 
 

@@ -16,6 +16,9 @@ from .pattern import parse_pattern
 def _required(dic, key, type=str):
     return type(dic[key])
 
+def _optional(dic, key, default, type=str):
+    return type(dic.get(key, default))
+
 Artist   = namedtuple("Artist",  ["name", "staff_name", "instrument_name", "pan", "gain", "delay_ms" ])
 Ensamble = namedtuple("Ensamble",["name", "artists" ])
 
@@ -181,7 +184,7 @@ class Bateria():
 
     def _parse_instrument(self, cfg, instrument_cfg):
         instrument = Instrument(_required(instrument_cfg, "name"),
-                bpm = _required(cfg, "bpm"))
+                bpm = _required(cfg, "bpm"), auto_pattern = _optional(instrument_cfg, "auto_pattern", False, bool))
         self._parse_patterns(cfg, instrument_cfg, instrument)
         self._parse_cliches(cfg, instrument_cfg, instrument)
         return instrument
