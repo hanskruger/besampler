@@ -39,6 +39,9 @@ instruments:
       cliches:
         - pattern: ".x.x"
           reciept: "x:.x..;x:...x"
+        - pattern: "Xxx"
+          reciept: "x:x..;x:.x.:gain=-5;x:..x:gain=-5"
+
     - name: "Caixa"
       patterns:     
         - pattern: "|/ / / /"
@@ -60,7 +63,7 @@ instruments:
         - pattern: ".x.x"
           reciept: "x:.x..;x:...x"
       cliches:
-        - pattern: "xxx"
+        - pattern: "Xxx"
           reciept: "x:x..;x:.x.:gain=-5;x:..x:gain=-5"
 
     - name: "Primeira"
