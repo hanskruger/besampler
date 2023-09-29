@@ -33,9 +33,6 @@ def _parse_playset(inp):
             idx.extend( range( int(c1[0]) - 1, int(c1[1])))
     return idx
  
-
-
-
 class Score():
     def __init__(self, time_signature = TimeSignature()):
         self._score = []
@@ -133,7 +130,12 @@ class Score():
             raise RuntimeError(f"Error while parsing line {line}: All staff lines MUST have the same length (except for trailing whitespaces)")
             pass
 
-        instruments = list(map(lambda x: Staff(x.split("|", 1)[0].strip()), lines))
+        def parse_instrument_name(inp):
+            if inp[0] == "%": # in Latex, we ignore the '%' so we can have hidden 
+                return inp[1:]
+            return inp
+
+        instruments = list(map(lambda x: Staff(parse_instrument_name(x.split("|", 1)[0].strip())), lines))
         staffs = {}
         for instrument, measures in zip(instruments, list(map(lambda x: x.split("|")[1:-1], lines))):
             staffs[ instrument ] = measures
@@ -151,7 +153,7 @@ class Score():
         Match for Latex lines  
 
         '''
-        latex_regex = "(\w[\d\s\w]{1,15})&([&a-zA-Z0-9\s\.\/]+)\\\\(.*)"
+        latex_regex = "(%?\w[\d\s\w]{1,15})&([&a-zA-Z0-9\s\.\/]+)\\\\(.*)"
         m = re.match(latex_regex, s)
         if not m:
             return None
@@ -191,7 +193,20 @@ class Score():
                         score.add_staff_line(staffline, lineno)
                         staffline = []
                     continue
-                #print(line)
+                
+                # look for playlist
+                if (m := re.match(".*%\s*playlist(\[(\w+)\])?: ([-x,0-9]+)", line)):
+                    if not m.group(3):
+                        logging.warning(f'Empty playlist in line {lineno}.')
+                        continue
+                    if not m.group(2): # default playlist
+                        logging.debug(f'Found playlist in line {lineno}: {m.group(3)}')
+                        score.playset(m.group(3))
+                    if m.group(2):
+                        logging.warning(f'Alternative playlist {m.group(2)} (line no {lineno}) not supported.')
+
+                    continue
+
                 m = score.match_latex(line, lineno) if mode == "TEX" else score.match_text(line, lineno)
 
                 if (not m):
