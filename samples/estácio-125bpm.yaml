@@ -19,6 +19,12 @@ instruments:
           samples: [ "agogo/c-*.wav" ]
         - pattern: "d"
           samples: [ "agogo/d-*.wav" ]
+    
+    - name: "Frigideira"
+      auto_pattern: True
+      patterns:
+        - pattern: "x"
+          samples: [ "frigideira/frigideira_x-*.wav" ]
 
     - name: "Chocalho"
       patterns:
@@ -189,6 +195,9 @@ ensambles:
         - name: "ago1"
           staff: "Agogo"
           instrument: "Agogo"
+        - name: "fri1"
+          staff: "Frigideira"
+          instrument: "Frigideira"
         - name: "cho1"
           staff: "Chocalho"
           instrument: "Chocalho"
