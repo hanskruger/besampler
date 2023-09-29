@@ -6,6 +6,8 @@ import glob
 import random
 import functools
 from pathlib import Path
+import re
+from locale import atof
 
 from .utils import TimeSignature, Clock
 from .instrument import Instrument
@@ -106,11 +108,15 @@ class Bateria():
         # 1. pass: build the smaple!
         prog = []
         reciept_str = cliche_cfg["reciept"]
-        for re in reciept_str.split(";"):
-            pat, shift = re.split(":")[0:2]
+        for rec in reciept_str.split(";"):
+            pat, shift = rec.split(":")[0:2]
+            gain = 0.0
+            if (m := re.match(".*:gain=([+-]?[.,0-9]+)", rec)):
+                gain = atof(m.group(1))
+
             pat = parse_pattern(pat)
             shift = str(shift)
-            options = re.split(":")[2:]
+            options = rec.split(":")[2:]
             patterns = sorted(
                     filter(
                         lambda x: x.pattern == pat.pattern and x.on_beat_1 == pat.on_beat_1 and not x.cliche,
@@ -119,15 +125,15 @@ class Bateria():
                 raise RuntimeError(f"Could not find a pattern for \"{pat}\" to build cliche \"{pattern}\" for instrument {instrument}")
             # if we have more than one pattern, something is wrong! Take the first one.
             pat = patterns[0]
-            prog.append( (pat, shift) )
+            prog.append( (pat, shift, gain) )
 
         variations = min(variations, functools.reduce(lambda x,y: x*y, map( lambda x: len(x[0].samples), prog)))
         if variations > 1:
             logging.debug(f"Adding {variations} random variations of this cliche.")
         for i in range(variations):
             sb = SampleBuilder(self.bpm, self.frame_rate)
-            for (pat, shift) in prog:
-                sb.add_subsample( random.choice( pat.samples ), shift )
+            for (pat, shift, gain) in prog:
+                sb.add_subsample( random.choice( pat.samples ), shift, gain )
             # 2. Add the pattern!
             pattern.add_samples(sb.build())
 

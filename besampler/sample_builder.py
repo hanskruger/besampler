@@ -11,23 +11,26 @@ class SampleBuilder(object):
         self._frame_rate = frame_rate
         self._build_instructions = []
 
-    def add_subsample(self, sample, shift = None):
+    def add_subsample(self, sample, shift = None, gain = None):
         # TODO: Check for correct frame rate of samples!
-        self._build_instructions.append( (sample, shift))
+        self._build_instructions.append( (sample, shift, gain))
         return self
 
     def build(self):
         max_offset = max( map( lambda x: x[0].offset_ms, self._build_instructions))
         max_length = max( map( lambda x: x[0].length_ms - x[0].offset_ms, self._build_instructions))
-        
+
         clk = Clock(self._bpm, frame_rate=self._frame_rate, offset_ms = max_offset)
-        
+
         wav = WaveFile.silence(max_length + max_offset + clk.pulse_length_ms, self._frame_rate)
-        
-        for sample, shift in self._build_instructions:
+
+        for sample, shift, gain in self._build_instructions:
             offset = clk.pulse( 0, shift ) - sample.offset_ms
             #print(offset, p.pattern.sample(p.repeat_index).wave)
-            wav.overlay(sample.wave , offset=offset)
+            if gain:
+                wav.overlay(sample.wave.clone().gain(gain), offset=offset)
+            else:
+                wav.overlay(sample.wave , offset=offset)
 
         return Sample(wav, offset_ms = max_offset)
     

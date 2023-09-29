@@ -9,9 +9,9 @@ from pathlib import Path
 from functools import total_ordering
 
 class WaveFile(object):
-    def __init__(self, frame_rate, length_ms, channels = 1):
+    def __init__(self, frame_rate, length_ms, channels = 1, audio_data = None ):
         self._frame_rate = frame_rate
-        self._audio_data = None
+        self._audio_data = audio_data
         pass
 
     @staticmethod
@@ -24,6 +24,9 @@ class WaveFile(object):
     
     def export(self, filename):
         return self._audio_data.export(filename)
+
+    def clone(self):
+        return WaveFile(self._frame_rate, 0, 1, self._audio_data.apply_gain(0.0))
 
     @staticmethod
     def silence(length_ms, hz):

@@ -59,6 +59,9 @@ instruments:
       cliches:
         - pattern: ".x.x"
           reciept: "x:.x..;x:...x"
+      cliches:
+        - pattern: "xxx"
+          reciept: "x:x..;x:.x.:gain=-5;x:..x:gain=-5"
 
     - name: "Primeira"
       patterns:
@@ -147,6 +150,10 @@ instruments:
           reciept: "h:x;x:.x"
         - pattern: ".x.x"
           reciept: "x:.x..;x:...x"
+        - pattern: "Xxo"
+          reciept: "x:x..;x:.x.:gain=-5;s:..x"
+        - pattern: "hxo"
+          reciept: "h:x..;x:.x.:gain=-5;s:..x"
 
       auto_cliches: True 
 
