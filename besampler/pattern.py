@@ -8,6 +8,7 @@ import random
 from pydub import AudioSegment
 from pathlib import Path
 from functools import total_ordering
+from locale import atof
 
 from .utils import TimeSignature, Clock
 
@@ -106,6 +107,32 @@ def parse_pattern(pattern):
     beats   = list(map(parse_tone, re.split("\\s+", pattern.strip(" \t|"))))
 
     return RetVal(beats, on_beat_1)
+    
+def reciept_maker(pattern):
+    prog = list()
+    # First: compute a program
+    for i in range(0, len(pattern)):
+        if match_pause(pattern[i]):
+            continue
+        tp = "."*i + "x" + "."*(len(pattern)-i-1)
+        prog.append( ( pattern[i], tp ) )
+    if (not prog):
+        return "-" # return pause!
+    return ";".join(map(lambda x: x[0] + ":" +  x[1], prog))
+
+def reciept_parser(reciept):
+    ProgEntry = namedtuple("ProgEntry",["pattern", "shift", "gain" ])
+    prog = []
+    for rec in reciept.split(";"):
+        pat, shift = rec.split(":")[0:2]
+        gain = 0.0
+        if (m := re.match(".*:gain=([+-]?[.,0-9]+)", rec)):
+            gain = atof(m.group(1))
+        #pat = parse_pattern(pat)
+        shift = str(shift)
+        prog.append( ProgEntry(pat, shift, gain) )
+    return prog
+
 
 class Pattern():
     def __init__(self, pattern, cliche = False, random = False):
@@ -190,4 +217,5 @@ class Pattern():
     @property
     def samples(self):
         return list( self._samples )
+
 

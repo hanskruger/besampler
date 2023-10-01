@@ -13,7 +13,7 @@ import functools
 import random
 
 from .wavefile import WaveFile
-from .pattern  import match_pause, match_repeat, parse_tone
+from .pattern  import match_pause, match_repeat, parse_tone, reciept_maker, reciept_parser
 from .utils    import Clock
 
 Prog      = namedtuple("Prog",["programm", ])
@@ -109,42 +109,19 @@ class Player():
         Return a none empty array, if a patern can be copiled usig aauto-pattern algorithm. Otherwise return None.
         '''
         pattern = staff_line[idx]
-
         if (not artist.instrument.auto_pattern):
             return None
-
-        prog = list()
-        # First: compute a program
-        for i in range(0, len(pattern)):
-            if match_pause(pattern[i]):
-                continue
-            sub_patterns = list(filter(lambda x: x.match([ pattern[i] ], 0, 0, time_signature = score.time_signature), iter(artist.instrument)))
-            if not sub_patterns: # if one single piece is missing, we abort!
-                return None
-            #print( i, pattern[i], len(sub_patterns))
-            prog.append( (i, sub_patterns ) )
-
-        if (not prog):
-            return None
-
-        # second: Compile the pattern using that programm.
-        from .sample_builder import SampleBuilder
-        from .pattern import Pattern
-
-        variations = min(13, functools.reduce(lambda x,y: x*y, map( lambda x: len(x[1][0].samples), prog)))
-
-        pat = artist.instrument.add_pattern(pattern).random(True) # this wil alos add the new pattern to the DB, we we wwill find it next time.
-
-        for i in range(0, variations):
-            sample_builder = SampleBuilder(self._bpm, self._freq)
-            for e in prog:
-                tp = "."*len(pattern)
-                tp = tp[0:e[0]] + "x" + tp[e[0]+1:]
-          
-                sample_builder.add_subsample(random.choice(e[1][0].samples), tp)
-            pat.add_samples(sample_builder.build())
-
+        pat = artist.instrument.build_pattern( pattern, reciept_maker(pattern), self._bpm, self._freq)
         return [  pat,  ]
+
+    def _pre_artist(self, artis, staff, score):
+        # pass 0: Build any missing patterns for instruments
+        for ins,patterns in score.patterns.items():
+            if ins != artis.instrument.name:
+                continue
+            for pat,rec in patterns:
+                logging.debug(f"Adding score specific pattern for instrument {artis.instrument.name}: {pat} {rec}")
+                self._add_score_pattern(score, artis.instrument, pat, rec)    
 
     def _compile_artist(self, artist, staff, score):
         logging.info(f"Generating audio track for artist {artist.name}({artist.instrument.name}), staff {staff}.")
@@ -197,6 +174,7 @@ class Player():
 
     def _synth_artist(self, prog, artis, score):
         clk = Clock(self._bpm, frame_rate=self._freq, offset_ms=0)
+        
 
         lenght_ms      = 60000.0 * score.length * score.time_signature.pulses / self._bpm
         lenght_samples = lenght_ms * self._freq / 1000.0
@@ -211,7 +189,12 @@ class Player():
 
         return wav
 
+    def _add_score_pattern(self, score, instrument, pat, rec):
+        instrument.build_pattern( pat, rec, self._bpm, self._freq)
+        pass
+
     def synthesize(self, score, staff = None):
+
 
         # pass 1: detect all stafflines
         staffs = []
@@ -224,7 +207,6 @@ class Player():
         lenght_samples = lenght_ms *  self._freq / 1000
         logging.info(f"Total length of this score is {score.length * score.time_signature.pulses} beats, {lenght_ms/1000}s")
 
-        instruments = []
         out = None
 
         # pass 2: Check for instrumetns for all staff lines
@@ -241,6 +223,7 @@ class Player():
                     continue
 
                 # pass 3: For each staff line and isntrument, generate the wave file
+                self._pre_artist(i, s, score)
                 prog = self._compile_artist(i, s, score)
                 self._prog_cb(prog, i, score)
                 snd = self._synth_artist(prog, i, score)

@@ -98,53 +98,7 @@ class Bateria():
             self._parse_pattern(cfg, instrument, pattern_cfg)
 
     def _parse_cliche(self, cfg, cliche_cfg, instrument, variations=13):
-        pattern = instrument.add_pattern(_required(cliche_cfg, "pattern")).random(True)
-        logging.debug(f'Adding cliche "{pattern}" for instrument {instrument.name}.')
-
-        for alias in cliche_cfg.get("aliases",[]):
-            logging.debug(f'Adding alias "{alias}" to cliche "{pattern}" for instrument {instrument.name}.')
-            pattern.alias(alias)
-
-        # 1. pass: build the smaple!
-        prog = []
-        reciept_str = cliche_cfg["reciept"]
-        for rec in reciept_str.split(";"):
-            pat, shift = rec.split(":")[0:2]
-            gain = 0.0
-            if (m := re.match(".*:gain=([+-]?[.,0-9]+)", rec)):
-                gain = atof(m.group(1))
-
-            pat = parse_pattern(pat)
-            shift = str(shift)
-            options = rec.split(":")[2:]
-            patterns = sorted(
-                    filter(
-                        lambda x: x.pattern == pat.pattern and x.on_beat_1 == pat.on_beat_1 and not x.cliche,
-                        instrument),  key=lambda x: x.score)
-            if (not patterns):
-                raise RuntimeError(f"Could not find a pattern for \"{pat}\" to build cliche \"{pattern}\" for instrument {instrument}")
-            # if we have more than one pattern, something is wrong! Take the first one.
-            pat = patterns[0]
-            prog.append( (pat, shift, gain) )
-
-        variations = min(variations, functools.reduce(lambda x,y: x*y, map( lambda x: len(x[0].samples), prog)))
-        if variations > 1:
-            logging.debug(f"Adding {variations} random variations of this cliche.")
-        for i in range(variations):
-            sb = SampleBuilder(self.bpm, self.frame_rate)
-            for (pat, shift, gain) in prog:
-                sb.add_subsample( random.choice( pat.samples ), shift, gain )
-            # 2. Add the pattern!
-            pattern.add_samples(sb.build())
-
-
-        #SampleBuilder(100, 48000)
-        #        .add_subsample(Sample("samples/estácio/100bpm/caixa-x___-1.wav"))
-        #        .add_subsample(Sample("samples/estácio/100bpm/caixa-x___-1.wav"), ".x")
-        #        .build()
-        #        )
-
-
+        pattern = instrument.build_pattern( cliche_cfg["pattern"], cliche_cfg["reciept"], self.bpm, self.frame_rate, aliases= cliche_cfg.get("aliases",[]))
         pass
 
     def _parse_cliches(self, cfg, instrument_cfg, instrument):

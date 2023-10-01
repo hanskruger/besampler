@@ -38,6 +38,7 @@ class Score():
         self._score = []
         self._time_signature = time_signature
         self._playset = None
+        self._patterns = {}
 
     @property
     def time_signature(self):
@@ -46,6 +47,12 @@ class Score():
     def add_staff(self, staff):
         return staff
 
+    @property
+    def patterns(self):
+        '''
+        REturn teh set of scpore individual patterns
+        '''
+        return self._patterns
         
     @property
     def staffs(self):
@@ -206,6 +213,9 @@ class Score():
                         logging.warning(f'Alternative playlist {m.group(2)} (line no {lineno}) not supported.')
 
                     continue
+                # todo add capability to add score specific samples.
+                if (m := re.match("^\s*%\s*pattern\[(\w+)]\s*:\s*(.*)$", line)):
+                    score._patterns.setdefault(m.group(1), []).append( m.group(2).split("=",1))
 
                 m = score.match_latex(line, lineno) if mode == "TEX" else score.match_text(line, lineno)
 

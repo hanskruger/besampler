@@ -4,6 +4,7 @@ from .wavefile import WaveFile
 from .sample   import Sample
 from .utils   import Clock
 from .player import ProgEntry
+from .pattern import match_pause
 
 class SampleBuilder(object):
     def __init__(self, bpm, frame_rate):
@@ -37,3 +38,6 @@ class SampleBuilder(object):
     def apply(self, pattern, idx, programm, score, staff, staffline, artist, repeat_index):
         programm.append( ProgEntry( self.sample(repeat_index), repeat_index, idx, pattern) )
         return len(pattern)
+
+
+

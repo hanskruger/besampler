@@ -7,9 +7,16 @@ import wave
 from pydub import AudioSegment
 from pathlib import Path
 from functools import total_ordering
+import re
+from locale import atof
+import functools
+import random
+import logging
 
 from .wavefile import WaveFile
-from .pattern import Pattern
+from .pattern import Pattern, parse_pattern
+from .sample_builder import SampleBuilder
+from .pattern import reciept_parser
 
 class Instrument():
     pass
@@ -59,3 +66,41 @@ class Instrument():
 
     def __lt__(self, other):
         return isinstance(other, Instrument) and self._name < other.name
+
+    def build_pattern(self, pattern, reciept, bpm, frame_rate, variations = 13, aliases = []):
+        '''
+        Build an new pattern based on the given reciept
+        '''
+        logging.debug(f'Adding cliche "{pattern}" for instrument {self.name}.')
+        pattern = self.add_pattern(pattern).random(True)
+        for alias in aliases:
+            logging.debug(f'Adding alias "{alias}" to cliche "{pattern}" for instrument {self.name}.')
+            pattern.alias(alias)
+        # 1. pass: build the smaple!
+        prog = []
+        for rec in reciept_parser(reciept):
+            pat = parse_pattern(rec.pattern)
+            shift = rec.shift
+            # TODO replce next line with best match function
+            patterns = sorted(
+                    filter(
+                        lambda x: x.pattern == pat.pattern and x.on_beat_1 == pat.on_beat_1 and not x.cliche,
+                        self._patterns.values()),  key=lambda x: x.score)
+            if (not patterns):
+                raise RuntimeError(f"Could not find a pattern for \"{pat}\" to build cliche \"{pattern}\" for instrument {instrument}")
+            # if we have more than one pattern, something is wrong! Take the first one.
+            pat = patterns[0]
+            prog.append( (pat, shift, rec.gain) )
+
+        variations = min(variations, functools.reduce(lambda x,y: x*y, map( lambda x: len(x[0].samples), prog)))
+        if variations > 1:
+            logging.debug(f"Adding {variations} random variations of this cliche.")
+        for i in range(variations):
+            sb = SampleBuilder(bpm, frame_rate)
+            for (pat, shift, gain) in prog:
+                sb.add_subsample( random.choice( pat.samples ), shift, gain )
+            # 2. Add the pattern!
+            pattern.add_samples(sb.build())
+        return pattern
+
+
