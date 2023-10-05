@@ -123,6 +123,8 @@ def reciept_maker(pattern):
 def reciept_parser(reciept):
     ProgEntry = namedtuple("ProgEntry",["pattern", "shift", "gain" ])
     prog = []
+    if not reciept:
+        return prog
     for rec in reciept.split(";"):
         pat, shift = rec.split(":")[0:2]
         gain = 0.0

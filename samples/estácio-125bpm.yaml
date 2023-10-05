@@ -74,6 +74,12 @@ instruments:
       cliches:
         - pattern: "xxxx"
           reciept: "x:x;x:.x..;x:..x.;x:...x"
+      cliches:
+        - pattern: "|/ / / /"
+          reciept: [ "", "x:x", "" , "x:x" ]
+        - pattern: "|/ / / x"
+          reciept: [ "", "x:x", "" , "x:x" ]
+
       auto_cliches: True 
     - name: "Segunda"
       patterns:
@@ -83,6 +89,10 @@ instruments:
       cliches:
         - pattern: "xxxx"
           reciept: "x:x;x:.x..;x:..x.;x:...x"
+        - pattern: "|/ / / /"
+          reciept: [ "x:x", "" , "x:x", "" ]
+        - pattern: "|/ / / x"
+          reciept: [ "x:x", "" , "x:x", "x:x" ]
       auto_cliches: True 
     - name: "Terceira"
       patterns:
@@ -92,6 +102,12 @@ instruments:
       cliches:
         - pattern: "xxxx"
           reciept: "x:x;x:.x..;x:..x.;x:...x"
+        - pattern: "|/ / / / / / / /"
+          reciept: [ "" , "x:x;x:.x", "", "x:x;x:.x..;x:...x", "" , "x:x;x:.x", "x:.x", "x:x;x:.x..;x:...x" ]
+        - pattern: "|/ / / /"
+          reciept: [ "" , "x:x;x:.x", "", "x:x;x:.x..;x:...x" ]
+        - pattern: "|/ / / x"
+          reciept: [ "" , "x:x;x:.x", "", "x:x" ]
       auto_cliches: True 
     - name: "Tamborim"
       patterns:     

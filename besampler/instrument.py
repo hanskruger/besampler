@@ -71,6 +71,10 @@ class Instrument():
         '''
         Build an new pattern based on the given reciept
         '''
+        if isinstance(reciept, str):
+            reciept = [ reciept, ]
+            
+
         logging.debug(f'Adding cliche "{pattern}" for instrument {self.name}.')
         pattern = self.add_pattern(pattern).random(True)
         for alias in aliases:
@@ -78,27 +82,29 @@ class Instrument():
             pattern.alias(alias)
         # 1. pass: build the smaple!
         prog = []
-        for rec in reciept_parser(reciept):
-            pat = parse_pattern(rec.pattern)
-            shift = rec.shift
-            # TODO replce next line with best match function
-            patterns = sorted(
-                    filter(
-                        lambda x: x.pattern == pat.pattern and x.on_beat_1 == pat.on_beat_1 and not x.cliche,
-                        self._patterns.values()),  key=lambda x: x.score)
-            if (not patterns):
-                raise RuntimeError(f"Could not find a pattern for \"{pat}\" to build cliche \"{pattern}\" for instrument {instrument}")
-            # if we have more than one pattern, something is wrong! Take the first one.
-            pat = patterns[0]
-            prog.append( (pat, shift, rec.gain) )
+        for pulse in range(len(reciept)):
+            for rec in reciept_parser(reciept[pulse]):
+                pat = parse_pattern(rec.pattern)
+                shift = rec.shift
+                # TODO replce next line with best match function
+                patterns = sorted(
+                        filter(
+                            lambda x: x.pattern == pat.pattern and x.on_beat_1 == pat.on_beat_1 and not x.cliche,
+                            self._patterns.values()),  key=lambda x: x.score)
+                if (not patterns):
+                    raise RuntimeError(f"Could not find a pattern for \"{pat}\" to build cliche \"{pattern}\" for instrument {instrument}")
+                # if we have more than one pattern, something is wrong! Take the first one.
+                pat = patterns[0]
+                prog.append( (pat, shift, rec.gain, pulse) )
+        print(pattern, reciept, prog)
 
         variations = min(variations, functools.reduce(lambda x,y: x*y, map( lambda x: len(x[0].samples), prog)))
         if variations > 1:
             logging.debug(f"Adding {variations} random variations of this cliche.")
         for i in range(variations):
             sb = SampleBuilder(bpm, frame_rate)
-            for (pat, shift, gain) in prog:
-                sb.add_subsample( random.choice( pat.samples ), shift, gain )
+            for (pat, shift, gain, pulse) in prog:
+                sb.add_subsample( random.choice( pat.samples ), shift, gain, pulse )
             # 2. Add the pattern!
             pattern.add_samples(sb.build())
         return pattern

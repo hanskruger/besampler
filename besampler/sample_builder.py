@@ -12,21 +12,29 @@ class SampleBuilder(object):
         self._frame_rate = frame_rate
         self._build_instructions = []
 
-    def add_subsample(self, sample, shift = None, gain = None):
+    def add_subsample(self, sample, shift = None, gain = None, pulse = 0):
         # TODO: Check for correct frame rate of samples!
-        self._build_instructions.append( (sample, shift, gain))
+        self._build_instructions.append( (sample, shift, gain, pulse))
         return self
 
     def build(self):
-        max_offset = max( map( lambda x: x[0].offset_ms, self._build_instructions))
-        max_length = max( map( lambda x: x[0].length_ms - x[0].offset_ms, self._build_instructions))
+        #max_offset = max( map( lambda x: x[0].offset_ms, self._build_instructions))
+        #max_length = max( map( lambda x: x[0].length_ms - x[0].offset_ms, self._build_instructions))
+        max_offset, max_length = (0,0)
+        clk = Clock(self._bpm, frame_rate=self._frame_rate, offset_ms = 0)
 
-        clk = Clock(self._bpm, frame_rate=self._frame_rate, offset_ms = max_offset)
+        # pass 0: get boundries 
+        for sample, shift, gain, pulse in self._build_instructions:
+            offset = clk.pulse( pulse, shift ) - sample.offset_ms
+            max_offset = min(max_offset, offset)
+            max_length = max(max_length, offset + sample.length_ms)
 
-        wav = WaveFile.silence(max_length + max_offset + clk.pulse_length_ms, self._frame_rate)
+        clk = Clock(self._bpm, frame_rate=self._frame_rate, offset_ms = abs(max_offset))
 
-        for sample, shift, gain in self._build_instructions:
-            offset = clk.pulse( 0, shift ) - sample.offset_ms
+        wav = WaveFile.silence(max_length + abs(max_offset) + clk.pulse_length_ms, self._frame_rate)
+
+        for sample, shift, gain, pulse in self._build_instructions:
+            offset = clk.pulse( pulse, shift ) - sample.offset_ms
             #print(offset, p.pattern.sample(p.repeat_index).wave)
             if gain:
                 wav.overlay(sample.wave.clone().gain(gain), offset=offset)
