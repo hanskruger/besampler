@@ -96,7 +96,7 @@ class Instrument():
                 # if we have more than one pattern, something is wrong! Take the first one.
                 pat = patterns[0]
                 prog.append( (pat, shift, rec.gain, pulse) )
-        print(pattern, reciept, prog)
+        #print(pattern, reciept, prog)
 
         variations = min(variations, functools.reduce(lambda x,y: x*y, map( lambda x: len(x[0].samples), prog)))
         if variations > 1:

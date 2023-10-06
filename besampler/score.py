@@ -38,6 +38,7 @@ class Score():
         self._score = []
         self._time_signature = time_signature
         self._playset = None
+        self._playlists = {}
         self._patterns = {}
 
     @property
@@ -53,7 +54,7 @@ class Score():
         REturn teh set of scpore individual patterns
         '''
         return self._patterns
-        
+
     @property
     def staffs(self):
         '''
@@ -100,17 +101,34 @@ class Score():
         '''Return the length in bars'''
         return len(self._idx())
 
-    def playset(self, inp):
-        self._playset = _parse_playset(inp)
+    @property
+    def playlists(self):
+        '''Return all known playlists'''
+        return self._playlists 
+
+    def playset(self, inp, name = None):
+        if inp in self._playlists and name == None:
+            self._playset = self._playlists[inp]
+            logging.info(f'Using playlist {inp}.')
+            logging.debug(f'Using playlist {inp}: {self._playlists[inp]}.')
+            return self
+        #print (name, inp)
+        self._playlists[name] = _parse_playset(inp)
+        if not name:
+            logging.info(f'setting playset to {inp}.')
+            self._playset = _parse_playset(inp)
         return self
 
-    def _idx(self):
-        if not self._playset:
-            return list(range(0, len(self._score)))
-        return self._playset
+    def _idx(self, name = None):
+        if not name:
+            if not self._playset:
+                return list(range(0, len(self._score)))
+            return self._playset
+        else: 
+            return self._playlists[name]
 
-    def measures(self, staff = None):
-        idx = self._idx()
+    def measures(self, staff = None, playset = None):
+        idx = self._idx(playset)
 
         if None is staff:
             for m in idx: 
@@ -200,7 +218,7 @@ class Score():
                         score.add_staff_line(staffline, lineno)
                         staffline = []
                     continue
-                
+
                 # look for playlist
                 if (m := re.match(".*%\s*playlist(\[(\w+)\])?: ([-x,0-9]+)", line)):
                     if not m.group(3):
@@ -210,7 +228,8 @@ class Score():
                         logging.debug(f'Found playlist in line {lineno}: {m.group(3)}')
                         score.playset(m.group(3))
                     if m.group(2):
-                        logging.warning(f'Alternative playlist {m.group(2)} (line no {lineno}) not supported.')
+                        score.playset(m.group(3), m.group(2))
+                        logging.debug(f'Found playlist {m.group(2)} in line {lineno}: {m.group(3)}')
 
                     continue
                 # todo add capability to add score specific samples.

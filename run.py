@@ -63,6 +63,7 @@ def print_info(args, score, player, bateria, ensamble):
 score.filename:       {args.score}
 score.time.signature: {score.time_signature.pulses}/{score.time_signature.note_value}
 score.staffs:         {", ".join(map(str, score.staffs))}
+score.playlists:      {", ".join(map(str, score.playlists.keys()))}
 player.bpm:           {player.bpm}
 player.instruments:   {", ".join(map(str, player.instruments))}
 player.artists:       {", ".join(map(lambda x: x.name, player.artists))}
